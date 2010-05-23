@@ -1522,9 +1522,67 @@ namespace ProjectEuler
         {
             var primes = GetFirstNPrimes(10);
 
+            Func<Dictionary<long, int>, long> numFromFactors = (factors) =>
+            {
+                long product = 1;
+                foreach (var factor in factors)
+                {
+                    for (int i = 0; i < factor.Value; i++)
+                    {
+                        product *= factor.Key;
+                    }
+                }
+
+                return product;
+            };
+
+            Func<long, int> getRepitition = (long num) =>
+            {
+                long dividend = 10;
+
+                int reps = 1;
+                while (true)
+                {
+                    var quotient = dividend / num;
+                    var remainder = dividend % num;
+
+                    if (remainder == 1)
+                    {
+                        return reps;
+                    }
+                    else if (remainder == 0)
+                    {
+                        return 0;
+                    }
+                    
+                    reps++;
+                    dividend = remainder *= 10;
+                }
+            };
+
+            var maxReps = 0;
+            var maxRepsValue = 0;
             for (int i = 2; i < 1000; i++)
             {
+                var factors = Factor(i, primes);
+                factors.Remove(2);
+                factors.Remove(5);
+
+                if (factors.Count == 0)
+                {
+                    continue;
+                }
+
+                var num = numFromFactors(factors);
+                var reps = getRepitition(num);
+                if (reps > maxReps)
+                {
+                    maxReps = reps;
+                    maxRepsValue = i;
+                }
             }
+            
+            Console.WriteLine("value = " + maxRepsValue);
         }
 
         /// <summary>
