@@ -1690,6 +1690,32 @@ namespace ProjectEuler
         }
 
         /// <summary>
+        /// In England the currency is made up of pound, £, and pence, p, and there are eight coins in general circulation:
+        /// 
+        ///     1p, 2p, 5p, 10p, 20p, 50p, £1 (100p) and £2 (200p).
+        /// 
+        /// It is possible to make £2 in the following way:
+        /// 
+        ///     1×£1 + 1×50p + 2×20p + 1×5p + 1×2p + 3×1p
+        /// 
+        /// How many different ways can £2 be made using any number of coins?
+        /// </summary>
+        private static void Problem_31()
+        {
+        }
+
+        /// <summary>
+        /// 145 is a curious number, as 1! + 4! + 5! = 1 + 24 + 120 = 145.
+        /// 
+        /// Find the sum of all numbers which are equal to the sum of the factorial of their digits.
+        /// 
+        /// Note: as 1! = 1 and 2! = 2 are not sums they are not included.
+        /// </summary>
+        private static void Problem_34()
+        {
+        }
+
+        /// <summary>
         /// The decimal number, 585 = 1001001001_(2) (binary), is palindromic in both bases.
         /// 
         /// Find the sum of all numbers, less than one million, which are palindromic in base 10 and base 2.
