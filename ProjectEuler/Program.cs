@@ -34,7 +34,7 @@ namespace ProjectEuler
             var sw = new Stopwatch();
             sw.Start();
 
-            Problem_26();
+                Problem_27();
 
             sw.Stop();
             Console.WriteLine();
@@ -162,6 +162,76 @@ namespace ProjectEuler
 
             currentState.LargestValueChecked = largestAdded;
             return currentState;
+        }
+
+        private static PrimesList IsPrime(long value, PrimesList primes, out bool isPrime)
+        {
+            if (primes.LargestValueChecked >= value)
+            {
+                var l = 0;
+                var r = primes.Primes.Count + 1;
+
+                while (true)
+                {
+                    var p = (r - l) / 2;
+
+                    if (p == 0)
+                    {
+                        isPrime = false;
+                        return primes;
+                    }
+
+                    p += l;
+
+                    var comp = primes.Primes[p-1].CompareTo(value);
+
+                    if (comp == 0)
+                    {
+                        isPrime = true;
+                        return primes;
+                    }
+                    else if (comp < 0)
+                    {
+                        l = p;
+                    }
+                    else if (comp > 0)
+                    {
+                        r = p;
+                    }
+                }
+            }
+            else
+            {
+                var maxFactor = (long)Math.Sqrt(value);
+
+                if (primes.LargestValueChecked < maxFactor)
+                {
+                    primes = GetPrimesBelow(maxFactor);
+                }
+
+                int primeIndex = 0;
+                var prime = primes.Primes[primeIndex];
+                while (prime <= maxFactor)
+                {
+                    if (value % prime == 0)
+                    {
+                        isPrime = false;
+                        return primes;
+                    }
+
+                    primeIndex++;
+
+                    if (primeIndex >= primes.Primes.Count)
+                    {
+                        break;
+                    }
+
+                    prime = primes.Primes[primeIndex];
+                }
+
+                isPrime = true;
+                return primes;
+            }
         }
 
         private static Dictionary<long, int> Factor(long number, PrimesList currentState)
@@ -1596,7 +1666,7 @@ namespace ProjectEuler
         /// 
         /// Considering quadratics of the form:
         /// 
-        ///     n² + an + b, where |a| < 1000 and |b| < 1000
+        ///     n² + an + b, where |a| &lt; 1000 and |b| &lt; 1000
         /// 
         ///     where |n| is the modulus/absolute value of n
         ///     e.g. |11| = 11 and |−4| = 4
@@ -1605,7 +1675,38 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_27()
         {
+            var primes = GetPrimesBelow(1000);
 
+            var bValues = primes.Primes.Where(p => p < 1000).ToList();
+
+            int max = 0;
+            long maxProduct = 0;
+            bool isPrime = false;
+
+            foreach (var b in bValues)
+            {
+                for (int a = -999; a < 1000; a++)
+                {
+                    for (int n = 0; ; n++)
+                    {
+                        var value = n * n + a * n + b;
+                        primes = IsPrime(value, primes, out isPrime);
+
+                        if (!isPrime)
+                        {
+                            if (n - 1 > max)
+                            {
+                                max = n - 1;
+                                maxProduct = a * b;
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine("product = " + maxProduct);
         }
 
         /// <summary>
@@ -1716,6 +1817,66 @@ namespace ProjectEuler
         }
 
         /// <summary>
+        /// The number, 197, is called a circular prime because all rotations of the digits: 197, 971, and 719, are themselves prime.
+        /// 
+        /// There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
+        /// 
+        /// How many circular primes are there below one million?
+        /// </summary>
+        private static void Problem_35()
+        {
+            var primes = GetPrimesBelow(1000000);
+
+            var candidates = new List<long>(primes.Primes);
+            var circular = new List<long>();
+
+            Func<string, string> rotate = num =>
+            {
+                return num.Length == 1 ? num : num.Substring(1, num.Length - 1) + num.Substring(0, 1);
+            };
+
+            while (candidates.Count > 0)
+            {
+                var candidate = candidates[0];
+                candidates.RemoveAt(0);
+
+                var found = new List<long>();
+                found.Add(candidate);
+
+                var mismatch = false;
+
+                var next = rotate(candidate.ToString());
+                var nextLong = long.Parse(next);
+                while (nextLong != candidate)
+                {
+                    found.Add(nextLong);
+                    var index = candidates.IndexOf(nextLong);
+
+                    if (index < 0)
+                    {
+                        mismatch = true;
+                    }
+                    else
+                    {
+                        candidates.RemoveAt(index);
+                    }
+
+                    next = rotate(next);
+                    nextLong = long.Parse(next);
+                }
+
+                if (!mismatch)
+                {
+                    circular.AddRange(found);
+                }
+            }
+
+            var count = circular.Count;
+
+            Console.WriteLine("count = " + count);
+        }
+
+        /// <summary>
         /// The decimal number, 585 = 1001001001_(2) (binary), is palindromic in both bases.
         /// 
         /// Find the sum of all numbers, less than one million, which are palindromic in base 10 and base 2.
@@ -1764,6 +1925,53 @@ namespace ProjectEuler
             }
 
             Console.WriteLine("sum = " + sum);
+        }
+
+        /// <summary>
+        /// The nth term of the sequence of triangle numbers is given by, t(n) = n(n+1)/2; so the first ten triangle numbers are:
+        /// 
+        /// 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, ...
+        /// 
+        /// By converting each letter in a word to a number corresponding to its alphabetical position and adding these values we form a word value. For example, the word value for SKY is 19 + 11 + 25 = 55 = t(10). If the word value is a triangle number then we shall call the word a triangle word.
+        /// 
+        /// Using words.txt, a 16K text file containing nearly two-thousand common English words, how many are triangle words?
+        /// </summary>
+        private static void Problem_42()
+        {
+            var primes = GetPrimesBelow(100);
+
+            var text = File.ReadAllText("words.txt");
+
+            var words = from n in text.Split(',')
+                        let word = n.Substring(1, n.Length - 2)
+                        orderby word
+                        select word;
+
+            Func<string, int> getWordValue = word =>
+            {
+                var sum = 0;
+                foreach (var letter in word)
+                {
+                    sum += (letter - 'A') + 1;
+                }
+
+                return sum;
+            };
+
+            var count = 0;
+            foreach (var word in words)
+            {
+                var value = getWordValue(word);
+
+                var factors = Factor(8 * value + 1, primes);
+
+                if (!factors.Where(f => f.Value % 2 != 0).Any())
+                {
+                    count++;
+                }
+            }
+
+            Console.WriteLine("count = " + count);
         }
 
         /// <summary>
@@ -2019,6 +2227,62 @@ namespace ProjectEuler
             var max = lookup(new Point(0, 0));
 
             Console.WriteLine("max = " + max);
+        }
+
+        /// <summary>
+        /// A common security method used for online banking is to ask the user for three random characters from a passcode. For example, if the passcode was 531278, they may ask for the 2nd, 3rd, and 5th characters; the expected reply would be: 317.
+        /// 
+        /// The text file, keylog.txt, contains fifty successful login attempts.
+        /// 
+        /// Given that the three characters are always asked for in order, analyse the file so as to determine the shortest possible secret passcode of unknown length.
+        /// </summary>
+        private static void Problem_79()
+        {
+            var entries = File.ReadAllLines("keylog.txt").Distinct().ToList();
+
+            var characters = (from e in entries
+                              select e).SelectMany(e => e.ToCharArray()).Distinct().OrderBy(e => e).ToList();
+
+            Func<string, string, bool> isMatch = (pin, entry) =>
+            {
+                var start = 0;
+                foreach (var pos in entry)
+                {
+                    var next = pin.IndexOf(pos, start);
+                    if (next < 0)
+                    {
+                        return false;
+                    }
+
+                    start = next + 1;
+                }
+
+                return true;
+            };
+
+            for (int i = characters.Count; ; i++)
+            {
+                foreach (var comb in new Variations<char>(characters, i, GenerateOption.WithRepetition))
+                {
+                    var pin = new string(comb.ToArray());
+
+                    var found = true;
+                    foreach (var entry in entries)
+                    {
+                        if (!isMatch(pin, entry))
+                        {
+                            found = false;
+                            break;
+                        }
+                    }
+
+                    if (found)
+                    {
+                        Console.WriteLine("pin = " + pin);
+                        return;
+                    }
+                }
+            }
         }
 
         /// <summary>
