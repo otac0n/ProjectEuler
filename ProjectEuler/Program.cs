@@ -34,7 +34,7 @@ namespace ProjectEuler
             var sw = new Stopwatch();
             sw.Start();
 
-                Problem_27();
+                Problem_049();
 
             sw.Stop();
             Console.WriteLine();
@@ -44,17 +44,21 @@ namespace ProjectEuler
 
         private static PrimesList GetPrimesBelow(long max)
         {
-            return GetPrimesBelow(max, new PrimesList
+            var primes = new PrimesList
             {
                 Primes = new List<long>
                 {
                     2,
                 },
                 LargestValueChecked = 2,
-            });
+            };
+
+            GetPrimesBelow(max, primes);
+
+            return primes;
         }
 
-        private static PrimesList GetPrimesBelow(long max, PrimesList currentState)
+        private static void GetPrimesBelow(long max, PrimesList currentState)
         {
             var primes = currentState.Primes;
             int primeIndex = primes.Count - 1;
@@ -100,22 +104,25 @@ namespace ProjectEuler
             while (primeIndex < primes.Count);
 
             currentState.LargestValueChecked = largestAdded;
-            return currentState;
         }
 
         private static PrimesList GetFirstNPrimes(long number)
         {
-            return GetFirstNPrimes(number, new PrimesList
+            var primes = new PrimesList
             {
                 Primes = new List<long>
                 {
                     2,
                 },
                 LargestValueChecked = 2,
-            });
+            };
+
+            GetFirstNPrimes(number, primes);
+
+            return primes;
         }
 
-        private static PrimesList GetFirstNPrimes(long number, PrimesList currentState)
+        private static void GetFirstNPrimes(long number, PrimesList currentState)
         {
             var primes = currentState.Primes;
             int primeIndex = primes.Count - 1;
@@ -161,10 +168,9 @@ namespace ProjectEuler
             while (primeIndex < primes.Count);
 
             currentState.LargestValueChecked = largestAdded;
-            return currentState;
         }
 
-        private static PrimesList IsPrime(long value, PrimesList primes, out bool isPrime)
+        private static bool IsPrime(long value, PrimesList primes)
         {
             if (primes.LargestValueChecked >= value)
             {
@@ -177,8 +183,7 @@ namespace ProjectEuler
 
                     if (p == 0)
                     {
-                        isPrime = false;
-                        return primes;
+                        return false;
                     }
 
                     p += l;
@@ -187,8 +192,7 @@ namespace ProjectEuler
 
                     if (comp == 0)
                     {
-                        isPrime = true;
-                        return primes;
+                        return true;
                     }
                     else if (comp < 0)
                     {
@@ -215,8 +219,7 @@ namespace ProjectEuler
                 {
                     if (value % prime == 0)
                     {
-                        isPrime = false;
-                        return primes;
+                        return false;
                     }
 
                     primeIndex++;
@@ -229,8 +232,7 @@ namespace ProjectEuler
                     prime = primes.Primes[primeIndex];
                 }
 
-                isPrime = true;
-                return primes;
+                return true;
             }
         }
 
@@ -265,7 +267,7 @@ namespace ProjectEuler
 
                 if (number != 1)
                 {
-                    currentState = GetFirstNPrimes(currentState.Primes.Count + 100, currentState);
+                    GetFirstNPrimes(currentState.Primes.Count + 100, currentState);
                 }
             }
 
@@ -299,12 +301,24 @@ namespace ProjectEuler
             yield break;
         }
 
+        private static long Factorial(long num)
+        {
+            long product = 1;
+            while (num > 0)
+            {
+                product *= num;
+                num--;
+            }
+
+            return product;
+        }
+
         /// <summary>
         /// If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
         ///
         /// Find the sum of all the multiples of 3 or 5 below 1000.
         /// </summary>
-        private static void Problem_01()
+        private static void Problem_001()
         {
             var numbers = new List<int>();
 
@@ -327,7 +341,7 @@ namespace ProjectEuler
         ///
         /// Find the sum of all the even-valued terms in the sequence which do not exceed four million.
         /// </summary>
-        private static void Problem_02()
+        private static void Problem_002()
         {
             long nm1 = 1;
             long nm2 = 0;
@@ -360,7 +374,7 @@ namespace ProjectEuler
         /// 
         /// What is the largest prime factor of the number 600851475143 ?
         /// </summary>
-        private static void Problem_03()
+        private static void Problem_003()
         {
             long number = 600851475143;
             long? greatest = null;
@@ -402,7 +416,7 @@ namespace ProjectEuler
         /// 
         /// Find the largest palindrome made from the product of two 3-digit numbers.
         /// </summary>
-        private static void Problem_04()
+        private static void Problem_004()
         {
             var largest = 0;
 
@@ -441,7 +455,7 @@ namespace ProjectEuler
         /// 
         /// What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
         /// </summary>
-        private static void Problem_05()
+        private static void Problem_005()
         {
             var lessThan = 20;
 
@@ -485,7 +499,7 @@ namespace ProjectEuler
         ///
         /// Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
         /// </summary>
-        private static void Problem_06()
+        private static void Problem_006()
         {
             var sumSquares = 0d;
             var sum = 0d;
@@ -505,7 +519,7 @@ namespace ProjectEuler
         /// 
         /// What is the 10001st prime number?
         /// </summary>
-        private static void Problem_07()
+        private static void Problem_007()
         {
             var n = 10001;
             var primes = GetFirstNPrimes(n);
@@ -536,7 +550,7 @@ namespace ProjectEuler
         /// 05886116467109405077541002256983155200055935729725
         /// 71636269561882670428252483600823257530420752963450
         /// </summary>
-        private static void Problem_08()
+        private static void Problem_008()
         {
             var number =
               @"73167176531330624919225119674426574742355349194934
@@ -589,7 +603,7 @@ namespace ProjectEuler
         /// Find the product abc.
         ///
         /// </summary>
-        private static void Problem_09()
+        private static void Problem_009()
         {
             for (var a = 1; a <= 1000; a++)
             {
@@ -611,7 +625,7 @@ namespace ProjectEuler
         /// 
         /// Find the sum of all the primes below two million.
         /// </summary>
-        private static void Problem_10()
+        private static void Problem_010()
         {
             var primes = GetPrimesBelow(2000000);
             var sum = primes.Primes.Sum();
@@ -646,7 +660,7 @@ namespace ProjectEuler
         /// 
         /// What is the greatest product of four adjacent numbers in any direction (up, down, left, right, or diagonally) in the 20×20 grid?
         /// </summary>
-        private static void Problem_11()
+        private static void Problem_011()
         {
             var width = 20;
             var height = 20;
@@ -760,7 +774,7 @@ namespace ProjectEuler
         /// 
         /// What is the value of the first triangle number to have over five hundred divisors?
         /// </summary>
-        private static void Problem_12()
+        private static void Problem_012()
         {
             var primes = GetFirstNPrimes(1000);
 
@@ -890,7 +904,7 @@ namespace ProjectEuler
         /// 20849603980134001723930671666823555245252804609722
         /// 53503534226472524250874054075591789781264330331690
         /// </summary>
-        private static void Problem_13()
+        private static void Problem_013()
         {
             var text =
               @"37107287533902102798797998220837590246510135740250
@@ -1022,7 +1036,7 @@ namespace ProjectEuler
         /// NOTE: Once the chain starts the terms are allowed to go above one million.
         /// 
         /// </summary>
-        private static void Problem_14()
+        private static void Problem_014()
         {
             Func<long, long> getNext = (long n) =>
             {
@@ -1067,7 +1081,7 @@ namespace ProjectEuler
         /// 
         /// How many routes are there through a 20×20 grid?
         /// </summary>
-        private static void Problem_15()
+        private static void Problem_015()
         {
             var paths = new Dictionary<Size, long>();
 
@@ -1102,7 +1116,7 @@ namespace ProjectEuler
         /// 
         /// What is the sum of the digits of the number 2^(1000)?
         /// </summary>
-        private static void Problem_16()
+        private static void Problem_016()
         {
             BigInteger value = 1;
 
@@ -1128,7 +1142,7 @@ namespace ProjectEuler
         /// 
         /// If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words, how many letters would be used? 
         /// </summary>
-        private static void Problem_17()
+        private static void Problem_017()
         {
             var ones = new Dictionary<int, string>
             {
@@ -1270,7 +1284,7 @@ namespace ProjectEuler
         /// 63 66 04 68 89 53 67 30 73 16 69 87 40 31
         /// 04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
         /// </summary>
-        private static void Problem_18()
+        private static void Problem_018()
         {
             var text =
                @"75
@@ -1334,7 +1348,7 @@ namespace ProjectEuler
         /// 
         /// How many Sundays fell on the first of the month during the twentieth century (1 Jan 1901 to 31 Dec 2000)?
         /// </summary>
-        private static void Problem_19()
+        private static void Problem_019()
         {
             int total = 0;
             for (var day = new DateTime(1901, 1, 1); day.Year <= 2000; day = day.AddMonths(1))
@@ -1353,7 +1367,7 @@ namespace ProjectEuler
         /// 
         /// Find the sum of the digits in the number 100!
         /// </summary>
-        private static void Problem_20()
+        private static void Problem_020()
         {
             BigInteger value = 1;
 
@@ -1382,7 +1396,7 @@ namespace ProjectEuler
         /// 
         /// Evaluate the sum of all the amicable numbers under 10000.
         /// </summary>
-        private static void Problem_21()
+        private static void Problem_021()
         {
             var primes = GetFirstNPrimes(1000);
             var sums = new Dictionary<long, long>();
@@ -1412,7 +1426,7 @@ namespace ProjectEuler
         /// 
         /// What is the total of all the name scores in the file?
         /// </summary>
-        private static void Problem_22()
+        private static void Problem_022()
         {
             var text = File.ReadAllText("names.txt");
 
@@ -1449,7 +1463,7 @@ namespace ProjectEuler
         /// 
         /// Find the sum of all the positive integers which cannot be written as the sum of two abundant numbers.
         /// </summary>
-        private static void Problem_23()
+        private static void Problem_023()
         {
             long upperLimit = 28123;
 
@@ -1508,7 +1522,7 @@ namespace ProjectEuler
         /// 
         /// What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9?
         /// </summary>
-        private static void Problem_24()
+        private static void Problem_024()
         {
             var ch = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
@@ -1542,7 +1556,7 @@ namespace ProjectEuler
         /// 
         /// What is the first term in the Fibonacci sequence to contain 1000 digits?
         /// </summary>
-        private static void Problem_25()
+        private static void Problem_025()
         {
             BigInteger thousandDigits = 1;
             for (int i = 1; i < 1000; i++)
@@ -1588,7 +1602,7 @@ namespace ProjectEuler
         /// 
         /// Find the value of d &lt; 1000 for which 1/d contains the longest recurring cycle in its decimal fraction part.
         /// </summary>
-        private static void Problem_26()
+        private static void Problem_026()
         {
             var primes = GetFirstNPrimes(10);
 
@@ -1673,7 +1687,7 @@ namespace ProjectEuler
         /// 
         /// Find the product of the coefficients, a and b, for the quadratic expression that produces the maximum number of primes for consecutive values of n, starting with n = 0.
         /// </summary>
-        private static void Problem_27()
+        private static void Problem_027()
         {
             var primes = GetPrimesBelow(1000);
 
@@ -1690,7 +1704,7 @@ namespace ProjectEuler
                     for (int n = 0; ; n++)
                     {
                         var value = n * n + a * n + b;
-                        primes = IsPrime(value, primes, out isPrime);
+                        isPrime = IsPrime(value, primes);
 
                         if (!isPrime)
                         {
@@ -1722,7 +1736,7 @@ namespace ProjectEuler
         /// 
         /// What is the sum of the numbers on the diagonals in a 1001 by 1001 spiral formed in the same way?
         /// </summary>
-        private static void Problem_28()
+        private static void Problem_028()
         {
             var size = 1001;
 
@@ -1747,6 +1761,55 @@ namespace ProjectEuler
         }
 
         /// <summary>
+        /// Consider all integer combinations of a^(b) for 2 ≤ a  ≤ 5 and 2 ≤ b  ≤ 5:
+        /// 
+        ///     2^(2)=4, 2^(3)=8, 2^(4)=16, 2^(5)=32
+        ///     3^(2)=9, 3^(3)=27, 3^(4)=81, 3^(5)=243
+        ///     4^(2)=16, 4^(3)=64, 4^(4)=256, 4^(5)=1024
+        ///     5^(2)=25, 5^(3)=125, 5^(4)=625, 5^(5)=3125
+        /// 
+        /// If they are then placed in numerical order, with any repeats removed, we get the following sequence of 15 distinct terms:
+        /// 
+        /// 4, 8, 9, 16, 25, 27, 32, 64, 81, 125, 243, 256, 625, 1024, 3125
+        /// 
+        /// How many distinct terms are in the sequence generated by a^(b) for 2 ≤ a ≤ 100 and 2 ≤ b ≤ 100?
+        /// </summary>
+        private static void Problem_029()
+        {
+            var primes = GetPrimesBelow(100);
+
+            var distinct = new List<Dictionary<long, int>>();
+
+            for (int a = 2; a <= 100; a++)
+            {
+                var factorsOfA = Factor(a, primes);
+                
+                for (int b = 2; b <= 100; b++)
+                {
+                    var factors = factorsOfA.ToDictionary(f => f.Key, f => f.Value * b);
+
+                    var exists = (from i in distinct
+                                  where !(from f in factors
+                                          where !i.ContainsKey(f.Key) || i[f.Key] != f.Value
+                                          select f).Any()
+                                  where !(from f in i
+                                          where !factors.ContainsKey(f.Key)
+                                          select f).Any()
+                                  select i).Any();
+
+                    if (!exists)
+                    {
+                        distinct.Add(factors);
+                    }
+                }
+            }
+
+            var count = distinct.Count;
+
+            Console.WriteLine("count = " + count);
+        }
+
+        /// <summary>
         /// Surprisingly there are only three numbers that can be written as the sum of fourth powers of their digits:
         /// 
         ///     1634 = 1^(4) + 6^(4) + 3^(4) + 4^(4)
@@ -1759,7 +1822,7 @@ namespace ProjectEuler
         /// 
         /// Find the sum of all the numbers that can be written as the sum of fifth powers of their digits.
         /// </summary>
-        private static void Problem_30()
+        private static void Problem_030()
         {
             long total = 0;
 
@@ -1801,8 +1864,60 @@ namespace ProjectEuler
         /// 
         /// How many different ways can £2 be made using any number of coins?
         /// </summary>
-        private static void Problem_31()
+        private static void Problem_031()
         {
+            List<int> coinValues = new List<int>
+            {
+                200,
+                100,
+                50,
+                20,
+                10,
+                5,
+                2,
+                1,
+            };
+
+            var counts = new Dictionary<Point, int>();
+
+            Func<Point, int> lookup = null;
+            lookup = point =>
+            {
+                if (counts.ContainsKey(point))
+                {
+                    return counts[point];
+                }
+                else
+                {
+                    var index = point.X;
+                    var value = point.Y;
+                    var coinValue = coinValues[index];
+
+                    if (index == coinValues.Count - 1)
+                    {
+                        var sum = value % coinValue == 0 ? 1 : 0;
+                        counts[point] = sum;
+                        return sum;
+                    }
+                    else
+                    {
+                        var sum = lookup(new Point(index + 1, value));
+                        while (value >= coinValue)
+                        {
+                            value -= coinValue;
+
+                            sum += lookup(new Point(index + 1, value));
+                        }
+
+                        counts[point] = sum;
+                        return sum;
+                    }
+                }
+            };
+
+            var count = lookup(new Point(0, 200));
+
+            Console.WriteLine("count = " + count);
         }
 
         /// <summary>
@@ -1812,8 +1927,42 @@ namespace ProjectEuler
         /// 
         /// Note: as 1! = 1 and 2! = 2 are not sums they are not included.
         /// </summary>
-        private static void Problem_34()
+        private static void Problem_034()
         {
+            var digits = new Dictionary<char, long>
+            {
+                { '0', Factorial(0) },
+                { '1', Factorial(1) },
+                { '2', Factorial(2) },
+                { '3', Factorial(3) },
+                { '4', Factorial(4) },
+                { '5', Factorial(5) },
+                { '6', Factorial(6) },
+                { '7', Factorial(7) },
+                { '8', Factorial(8) },
+                { '9', Factorial(9) }
+            };
+
+            var upperBound = digits['9'] * 7;
+            long sum = 0;
+            for (long i = 10; i <= upperBound; i++)
+            {
+                var num = i.ToString();
+
+                long digitalSum = 0;
+
+                for (var j = 0; j < num.Length; j++)
+                {
+                    digitalSum += digits[num[j]];
+                }
+
+                if (digitalSum == i)
+                {
+                    sum += i;
+                }
+            }
+
+            Console.WriteLine("sum = " + sum);
         }
 
         /// <summary>
@@ -1823,7 +1972,7 @@ namespace ProjectEuler
         /// 
         /// How many circular primes are there below one million?
         /// </summary>
-        private static void Problem_35()
+        private static void Problem_035()
         {
             var primes = GetPrimesBelow(1000000);
 
@@ -1883,7 +2032,7 @@ namespace ProjectEuler
         /// 
         /// (Please note that the palindromic number, in either base, may not include leading zeros.)
         /// </summary>
-        private static void Problem_36()
+        private static void Problem_036()
         {
             long sum = 0;
             for (int num = 1; num < 1000000; num += 2)
@@ -1936,7 +2085,7 @@ namespace ProjectEuler
         /// 
         /// Using words.txt, a 16K text file containing nearly two-thousand common English words, how many are triangle words?
         /// </summary>
-        private static void Problem_42()
+        private static void Problem_042()
         {
             var primes = GetPrimesBelow(100);
 
@@ -1988,7 +2137,7 @@ namespace ProjectEuler
         /// 
         /// What is the smallest odd composite that cannot be written as the sum of a prime and twice a square?
         /// </summary>
-        private static void Problem_46()
+        private static void Problem_046()
         {
             long upperBound = 1000;
 
@@ -2077,7 +2226,7 @@ namespace ProjectEuler
         /// 
         /// Find the first four consecutive integers to have four distinct primes factors. What is the first of these numbers?
         /// </summary>
-        private static void Problem_47()
+        private static void Problem_047()
         {
             var primes = GetPrimesBelow(1000);
 
@@ -2114,7 +2263,7 @@ namespace ProjectEuler
         /// 
         /// Find the last ten digits of the series, 1^(1) + 2^(2) + 3^(3) + ... + 1000^(1000).
         /// </summary>
-        private static void Problem_48()
+        private static void Problem_048()
         {
             BigInteger sum = 0;
 
@@ -2138,6 +2287,90 @@ namespace ProjectEuler
         }
 
         /// <summary>
+        /// The arithmetic sequence, 1487, 4817, 8147, in which each of the terms increases by 3330, is unusual in two ways: (i) each of the three terms are prime, and, (ii) each of the 4-digit numbers are permutations of one another.
+        /// 
+        /// There are no arithmetic sequences made up of three 1-, 2-, or 3-digit primes, exhibiting this property, but there is one other 4-digit increasing sequence.
+        /// 
+        /// What 12-digit number do you form by concatenating the three terms in this sequence?
+        /// </summary>
+        private static void Problem_049()
+        {
+            var primes = GetPrimesBelow(10000);
+
+            Func<long, long, bool> isAnagram = (a, b) =>
+            {
+                var aStr = a.ToString();
+                var bStr = b.ToString();
+
+                if (aStr.Length != bStr.Length)
+                {
+                    return false;
+                }
+
+                var aChars = new int[10];
+                var bChars = new int[10];
+
+                foreach (var c in aStr)
+                {
+                    aChars[c - '0']++;
+                }
+
+                foreach (var c in bStr)
+                {
+                    bChars[c - '0']++;
+                }
+
+                for (int i = 0; i < 10; i++)
+                {
+                    if (aChars[i] != bChars[i])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            };
+
+            for (var aIndex = 169; aIndex < primes.Primes.Count - 2; aIndex++)
+            {
+                var a = primes.Primes[aIndex];
+
+                if (a == 1487)
+                {
+                    continue;
+                }
+
+                for (var bIndex = aIndex + 1; aIndex < primes.Primes.Count - 1; bIndex++)
+                {
+                    var b = primes.Primes[bIndex];
+
+                    var c = b - a + b;
+
+                    if (c > 9999)
+                    {
+                        break;
+                    }
+
+                    if (!isAnagram(a, b))
+                    {
+                        continue;
+                    }
+
+                    if (!IsPrime(c, primes))
+                    {
+                        continue;
+                    }
+
+                    if (isAnagram(b, c))
+                    {
+                        Console.WriteLine("composite = " + a.ToString() + b.ToString() + c.ToString());
+                        return;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// The prime 41, can be written as the sum of six consecutive primes:
         /// 41 = 2 + 3 + 5 + 7 + 11 + 13
         /// 
@@ -2147,7 +2380,7 @@ namespace ProjectEuler
         /// 
         /// Which prime, below one-million, can be written as the sum of the most consecutive primes?
         /// </summary>
-        private static void Problem_50()
+        private static void Problem_050()
         {
             var primes = GetPrimesBelow(1000000);
 
@@ -2194,7 +2427,7 @@ namespace ProjectEuler
         /// 
         /// Find the maximum total from top to bottom in triangle.txt (right click and 'Save Link/Target As...'), a 15K text file containing a triangle with one-hundred rows.
         /// </summary>
-        private static void Problem_67()
+        private static void Problem_067()
         {
             var text = File.ReadAllText("triangle.txt");
 
@@ -2236,7 +2469,7 @@ namespace ProjectEuler
         /// 
         /// Given that the three characters are always asked for in order, analyse the file so as to determine the shortest possible secret passcode of unknown length.
         /// </summary>
-        private static void Problem_79()
+        private static void Problem_079()
         {
             var entries = File.ReadAllLines("keylog.txt").Distinct().ToList();
 
@@ -2304,7 +2537,7 @@ namespace ProjectEuler
             var admissibleNumbers = new List<long>(Problem_293_GenerateAdmissible(1, 0, 1000000000, primes).OrderBy(i => i));
 
             var sqrtLargest = (long)Math.Sqrt(admissibleNumbers[admissibleNumbers.Count - 1]);
-            primes = GetPrimesBelow((long)(sqrtLargest * 1.1), primes);
+            GetPrimesBelow((long)(sqrtLargest * 1.1), primes);
             var largestPrime = primes.Primes[primes.Primes.Count - 1];
 
             var pseudoFortunate = new List<long>();
