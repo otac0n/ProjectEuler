@@ -34,7 +34,7 @@ namespace ProjectEuler
             var sw = new Stopwatch();
             sw.Start();
 
-                Problem_205();
+                Problem_059();
 
             sw.Stop();
             Console.WriteLine();
@@ -2586,6 +2586,8 @@ namespace ProjectEuler
 
             var passwords = new Variations<byte>(Enumerable.Range(0, 26).Select(l => (byte)l).ToList(), 3, GenerateOption.WithRepetition);
 
+            var maxLatinCharacters = 0;
+            var maxLatinMessage = "";
             foreach (var pass in passwords)
             {
                 var passArray = pass.ToArray();
@@ -2593,7 +2595,35 @@ namespace ProjectEuler
                 {
                     passArray[i] += (byte)'a';
                 }
+
+                var sb = new StringBuilder();
+
+                var latinCharacters = 0;
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    var character = (char)(byte)(passArray[i % passArray.Length] ^ bytes[i]);
+                    if ((character >= 'A' && character <= 'Z') ||
+                        (character >= 'a' && character <= 'z') ||
+                        (character >= '0' && character <= '9') ||
+                        (character == ' ') ||
+                        (character == '.') ||
+                        (character == ','))
+                    {
+                        latinCharacters++;
+                    }
+
+                    sb.Append((char)character);
+                }
+
+                if (latinCharacters > maxLatinCharacters)
+                {
+                    maxLatinCharacters = latinCharacters;
+                    maxLatinMessage = sb.ToString();
+                }
             }
+
+            var sum = maxLatinMessage.ToCharArray().Select(c => (int)c).Sum();
+            Console.WriteLine("sum = " + sum);
         }
 
         /// <summary>
