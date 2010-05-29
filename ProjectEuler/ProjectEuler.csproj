@@ -74,6 +74,9 @@
     <Content Include="poker.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="roman.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="System.Combinatorics.dll" />
     <Content Include="triangle.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
