@@ -34,7 +34,7 @@ namespace ProjectEuler
             var sw = new Stopwatch();
             sw.Start();
 
-                Problem_049();
+                Problem_205();
 
             sw.Stop();
             Console.WriteLine();
@@ -2416,6 +2416,187 @@ namespace ProjectEuler
         }
 
         /// <summary>
+        /// In the card game poker, a hand consists of five cards and are ranked, from lowest to highest, in the following way:
+        /// 
+        ///     * High Card: Highest value card.
+        ///     * One Pair: Two cards of the same value.
+        ///     * Two Pairs: Two different pairs.
+        ///     * Three of a Kind: Three cards of the same value.
+        ///     * Straight: All cards are consecutive values.
+        ///     * Flush: All cards of the same suit.
+        ///     * Full House: Three of a kind and a pair.
+        ///     * Four of a Kind: Four cards of the same value.
+        ///     * Straight Flush: All cards are consecutive values of same suit.
+        ///     * Royal Flush: Ten, Jack, Queen, King, Ace, in same suit.
+        /// 
+        /// The cards are valued in the order:
+        /// 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace.
+        /// 
+        /// If two players have the same ranked hands then the rank made up of the highest value wins; for example, a pair of eights beats a pair of fives (see example 1 below). But if two ranks tie, for example, both players have a pair of queens, then highest cards in each hand are compared (see example 4 below); if the highest cards tie then the next highest cards are compared, and so on.
+        /// 
+        /// Consider the following five hands dealt to two players:
+        /// 
+        /// Hand    Player 1           Player 2             Winner
+        /// 
+        /// 1       5H 5C 6S 7S KD     2C 3S 8S 8D TD       Player 2
+        ///         Pair of Fives      Pair of Eights
+        ///         
+        /// 2       5D 8C 9S JS AC     2C 5C 7D 8S QH       Player 1
+        ///         Highest card Ace   Highest card Queen
+        ///         
+        /// 3       2D 9C AS AH AC     3D 6D 7D TD QD       Player 2
+        ///         Three Aces         Flush with Diamonds
+        ///         
+        /// 4	 	4D 6S 9H QH QC     3D 6D 7H QD QS       Player 1
+        ///         Pair of Queens     Pair of Queens
+        ///         Highest card Nine  Highest card Seven 
+        ///         
+        /// 5	 	2H 2D 4C 4D 4S     3C 3D 3S 9S 9D       Player 1
+        ///         Full House         Full House
+        ///         With Three Fours   With Three Threes
+        /// 
+        /// The file, poker.txt, contains one-thousand random hands dealt to two players. Each line of the file contains ten cards (separated by a single space): the first five are Player 1's cards and the last five are Player 2's cards. You can assume that all hands are valid (no invalid characters or repeated cards), each player's hand is in no specific order, and in each hand there is a clear winner.
+        /// 
+        /// How many hands does Player 1 win?
+        /// </summary>
+        private static void Problem_054()
+        {
+            var deals = (from l in File.ReadLines("poker.txt")
+                         let cards = l.Split(' ')
+                         let values = from c in cards
+                                      let value = c.Substring(0, c.Length - 1)
+                                      select new Problem_054_Card
+                                      {
+                                          Suit = c[c.Length - 1],
+                                          Value = value == "A" ? 14 : (value == "K" ? 13 : (value == "Q" ? 12 : (value == "J" ? 11 : (value == "T" ? 10 : int.Parse(value))))),
+                                      }
+                         select new
+                         {
+                             Player1 = values.Take(5).OrderByDescending(c => c.Value).ToList(),
+                             Player2 = values.Skip(5).OrderByDescending(c => c.Value).ToList(),
+                         }).ToList();
+
+            Func<IList<Problem_054_Card>, string> score = hand =>
+            {
+                var isFlush = hand.Select(s => s.Suit).Distinct().Count() == 1;
+
+                var isStraight = hand[0].Value == hand[1].Value + 1 &&
+                                 hand[1].Value == hand[2].Value + 1 &&
+                                 hand[2].Value == hand[3].Value + 1 &&
+                                 hand[3].Value == hand[4].Value + 1;
+
+                Func<int, string> pad = value => "." + value.ToString().PadLeft(2, '0');
+
+                if (isStraight)
+                {
+                    return (isFlush ? "08" : "04") + pad(hand[0].Value);
+                }
+                else if (isFlush)
+                {
+                    return "05" + pad(hand[0].Value) + pad(hand[1].Value) + pad(hand[2].Value) + pad(hand[3].Value) + pad(hand[4].Value);
+                }
+
+                var groups = (from c in hand
+                              group hand by c.Value into g
+                              orderby g.Key descending
+                              orderby g.Count() descending
+                              select new
+                              {
+                                  Value = g.Key,
+                                  Count = g.Count(),
+                              }).ToList();
+
+                if (groups[0].Count == 4)
+                {
+                    return "07" + pad(groups[0].Value) + pad(groups[1].Value);
+                }
+                else if (groups[0].Count == 3)
+                {
+                    if (groups[1].Count == 2)
+                    {
+                        return "06" + pad(groups[0].Value) + pad(groups[1].Value);
+                    }
+                    else
+                    {
+                        return "03" + pad(groups[0].Value) + pad(groups[1].Value) + pad(groups[2].Value);
+                    }
+                }
+                else if (groups[0].Count == 2)
+                {
+                    if (groups[1].Count == 2)
+                    {
+                        return "02" + pad(groups[0].Value) + pad(groups[1].Value) + pad(groups[2].Value);
+                    }
+                    else
+                    {
+                        return "01" + pad(groups[0].Value) + pad(groups[1].Value) + pad(groups[2].Value) + pad(groups[3].Value);
+                    }
+                }
+
+                return "00" + pad(groups[0].Value) + pad(groups[1].Value) + pad(groups[2].Value) + pad(groups[3].Value) + pad(groups[4].Value);
+            };
+
+            /// High Card = 00.AA.BB.CC.DD.EE
+            /// One Pair = 01.AA.CC.DD.EE
+            /// Two Pairs = 02.AA.BB.EE
+            /// Three of a Kind = 03.AA.DD.EE
+            /// Straight = 04.AA
+            /// Flush = 05.AA.BB.CC.DD.EE
+            /// Full House = 06.AA.BB
+            /// Four of a Kind = 07.AA.EE
+            /// Straight\Royal Flush = 08.AA
+
+            var count = 0;
+            foreach (var deal in deals)
+            {
+                var p1 = score(deal.Player1);
+                var p2 = score(deal.Player2);
+
+                if (p1.CompareTo(p2) > 0)
+                {
+                    count++;
+                }
+            }
+
+            Console.WriteLine("count = " + count);
+        }
+
+        [DebuggerDisplay("{Value} of {Suit}")]
+        private class Problem_054_Card
+        {
+            public char Suit { get; set; }
+            public int Value { get; set; }
+        }
+
+        /// <summary>
+        /// Each character on a computer is assigned a unique code and the preferred standard is ASCII (American Standard Code for Information Interchange). For example, uppercase A = 65, asterisk (*) = 42, and lowercase k = 107.
+        /// 
+        /// A modern encryption method is to take a text file, convert the bytes to ASCII, then XOR each byte with a given value, taken from a secret key. The advantage with the XOR function is that using the same encryption key on the cipher text, restores the plain text; for example, 65 XOR 42 = 107, then 107 XOR 42 = 65.
+        /// 
+        /// For unbreakable encryption, the key is the same length as the plain text message, and the key is made up of random bytes. The user would keep the encrypted message and the encryption key in different locations, and without both "halves", it is impossible to decrypt the message.
+        /// 
+        /// Unfortunately, this method is impractical for most users, so the modified method is to use a password as a key. If the password is shorter than the message, which is likely, the key is repeated cyclically throughout the message. The balance for this method is using a sufficiently long password key for security, but short enough to be memorable.
+        /// 
+        /// Your task has been made easy, as the encryption key consists of three lower case characters. Using cipher1.txt, a file containing the encrypted ASCII codes, and the knowledge that the plain text must contain common English words, decrypt the message and find the sum of the ASCII values in the original text.
+        /// </summary>
+        private static void Problem_059()
+        {
+            var bytes = (from l in File.ReadAllText("cipher1.txt").Split(',')
+                         select (byte)int.Parse(l)).ToArray();
+
+            var passwords = new Variations<byte>(Enumerable.Range(0, 26).Select(l => (byte)l).ToList(), 3, GenerateOption.WithRepetition);
+
+            foreach (var pass in passwords)
+            {
+                var passArray = pass.ToArray();
+                for (int i = 0; i < passArray.Length; i++)
+                {
+                    passArray[i] += (byte)'a';
+                }
+            }
+        }
+
+        /// <summary>
         /// By starting at the top of the triangle below and moving to adjacent numbers on the row below, the maximum total from top to bottom is 23.
         /// 
         /// 3
@@ -2425,7 +2606,7 @@ namespace ProjectEuler
         /// 
         /// That is, 3 + 7 + 4 + 9 = 23.
         /// 
-        /// Find the maximum total from top to bottom in triangle.txt (right click and 'Save Link/Target As...'), a 15K text file containing a triangle with one-hundred rows.
+        /// Find the maximum total from top to bottom in triangle.txt, a 15K text file containing a triangle with one-hundred rows.
         /// </summary>
         private static void Problem_067()
         {
@@ -2460,6 +2641,66 @@ namespace ProjectEuler
             var max = lookup(new Point(0, 0));
 
             Console.WriteLine("max = " + max);
+        }
+
+        /// <summary>
+        /// It is possible to write five as a sum in exactly six different ways:
+        /// 
+        /// 4 + 1
+        /// 3 + 2
+        /// 3 + 1 + 1
+        /// 2 + 2 + 1
+        /// 2 + 1 + 1 + 1
+        /// 1 + 1 + 1 + 1 + 1
+        /// 
+        /// How many different ways can one hundred be written as a sum of at least two positive integers?
+        /// </summary>
+        private static void Problem_076()
+        {
+            var target = 100;
+
+            List<int> coinValues = Enumerable.Range(1, target - 1).OrderByDescending(c => c).ToList();
+
+            var counts = new Dictionary<Point, int>();
+
+            Func<Point, int> lookup = null;
+            lookup = point =>
+            {
+                if (counts.ContainsKey(point))
+                {
+                    return counts[point];
+                }
+                else
+                {
+                    var index = point.X;
+                    var value = point.Y;
+                    var coinValue = coinValues[index];
+
+                    if (index == coinValues.Count - 1)
+                    {
+                        var sum = value % coinValue == 0 ? 1 : 0;
+                        counts[point] = sum;
+                        return sum;
+                    }
+                    else
+                    {
+                        var sum = lookup(new Point(index + 1, value));
+                        while (value >= coinValue)
+                        {
+                            value -= coinValue;
+
+                            sum += lookup(new Point(index + 1, value));
+                        }
+
+                        counts[point] = sum;
+                        return sum;
+                    }
+                }
+            };
+
+            var count = lookup(new Point(0, target));
+
+            Console.WriteLine("count = " + count);
         }
 
         /// <summary>
@@ -2515,6 +2756,219 @@ namespace ProjectEuler
                         return;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// In the 5 by 5 matrix below, the minimal path sum from the top left to the bottom right, by only moving to the right and down, is indicated in bold red and is equal to 2427.
+        /// 
+        /// [131]	 673 	 234 	 103 	  18
+        /// [201]	[ 96] 	[342]	 965 	 150 
+        ///  630 	 803 	[746]	[422]	 111 
+        ///  537 	 699 	 497 	[121]	 956 
+        ///  805 	 732 	 524 	[ 37]	[331]
+        /// 
+        /// Find the minimal path sum, in matrix.txt, a 31K text file containing a 80 by 80 matrix, from the top left to the bottom right by only moving right and down.
+        /// </summary>
+        private static void Problem_081()
+        {
+            var grid = (from l in File.ReadLines("matrix.txt")
+                        select (from i in l.Split(',')
+                                select int.Parse(i)).ToArray()).ToArray();
+
+            var height = grid.Length;
+            var width = grid[0].Length;
+
+            var values = new Dictionary<Point, int>();
+
+            Func<Point, int> lookup = null;
+            lookup = point =>
+            {
+                if (values.ContainsKey(point))
+                {
+                    return values[point];
+                }
+
+                var x = point.X;
+                var y = point.Y;
+
+                var sum = grid[y][x];
+
+                if (x == width - 1)
+                {
+                    if (y == height - 1)
+                    {
+                        return sum;
+                    }
+
+                    sum += lookup(new Point(x, y + 1));
+                }
+                else if (y == height - 1)
+                {
+                    sum += lookup(new Point(x + 1, y));
+                }
+                else
+                {
+                    sum += Math.Min(
+                        lookup(new Point(x + 1, y)),
+                        lookup(new Point(x, y + 1)));
+                }
+
+                values[point] = sum;
+                return sum;
+            };
+
+            var min = lookup(new Point(0, 0));
+
+            Console.WriteLine("min = " + min);
+        }
+
+        /// <summary>
+        /// Peter has nine four-sided (pyramidal) dice, each with faces numbered 1, 2, 3, 4.
+        /// Colin has six six-sided (cubic) dice, each with faces numbered 1, 2, 3, 4, 5, 6.
+        /// 
+        /// Peter and Colin roll their dice and compare totals: the highest total wins. The result is a draw if the totals are equal.
+        /// 
+        /// What is the probability that Pyramidal Pete beats Cubic Colin? Give your answer rounded to seven decimal places in the form 0.abcdefg
+        /// </summary>
+        private static void Problem_205()
+        {
+            long pete = 0;
+            long total = 0;
+
+            var cSums = new Dictionary<int, long>();
+
+            foreach (var cDice in new Variations<int>(new List<int> { 1, 2, 3, 4, 5, 6 }, 6, GenerateOption.WithRepetition))
+            {
+                var cSum = cDice.Sum();
+
+                if (!cSums.ContainsKey(cSum))
+                {
+                    cSums[cSum] = 0;
+                }
+
+                cSums[cSum]++;
+            }
+
+            var pSums = new Dictionary<int, long>();
+
+            foreach (var pDice in new Variations<int>(new List<int> { 1, 2, 3, 4 }, 9, GenerateOption.WithRepetition))
+            {
+                var pSum = pDice.Sum();
+
+                if (!pSums.ContainsKey(pSum))
+                {
+                    pSums[pSum] = 0;
+                }
+
+                pSums[pSum]++;
+            }
+
+            foreach (var cSum in cSums.Keys)
+            {
+                var cRolls = cSums[cSum];
+                foreach (var pSum in pSums.Keys)
+                {
+                    var pRolls = pSums[pSum];
+
+                    var rolls = cRolls * pRolls;
+                    total += rolls;
+
+                    if (pSum > cSum)
+                    {
+                        pete += rolls;
+                    }
+                }
+            }
+
+            decimal peteRatio = pete;
+            peteRatio /= total;
+            Console.WriteLine("probability = " + Math.Round(peteRatio, 7));
+        }
+
+        /// <summary>
+        /// Find the unique positive integer whose square has the form 1_2_3_4_5_6_7_8_9_0, where each “_” is a single digit.
+        /// </summary>
+        private static void Problem_206()
+        {
+            // Bounds:
+            // 1010101010 < x < 1389026623
+
+            for (var i = 1010101010; i < 1389026623; i++)
+            {
+                var product = (long)i * i;
+
+                var digit = product % 10;
+                if (digit != 0)
+                {
+                    continue;
+                }
+
+                product /= 100;
+                digit = product % 10;
+                if (digit != 9)
+                {
+                    continue;
+                }
+
+                product /= 100;
+                digit = product % 10;
+                if (digit != 8)
+                {
+                    continue;
+                }
+
+                product /= 100;
+                digit = product % 10;
+                if (digit != 7)
+                {
+                    continue;
+                }
+
+                product /= 100;
+                digit = product % 10;
+                if (digit != 6)
+                {
+                    continue;
+                }
+
+                product /= 100;
+                digit = product % 10;
+                if (digit != 5)
+                {
+                    continue;
+                }
+
+                product /= 100;
+                digit = product % 10;
+                if (digit != 4)
+                {
+                    continue;
+                }
+
+                product /= 100;
+                digit = product % 10;
+                if (digit != 3)
+                {
+                    continue;
+                }
+
+                product /= 100;
+                digit = product % 10;
+                if (digit != 2)
+                {
+                    continue;
+                }
+
+                product /= 100;
+                digit = product % 10;
+                if (digit != 1)
+                {
+                    continue;
+                }
+
+                Console.WriteLine("int = " + i);
+                return;
             }
         }
 
