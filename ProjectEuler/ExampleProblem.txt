@@ -1,0 +1,12 @@
+﻿using System;
+
+namespace ProjectEuler
+{
+    [ProblemResource("whatever")]
+    public class Problem000 : Problem
+    {
+        public override void Solve(string resource)
+        {
+        }
+    }
+}

@@ -16,10 +16,15 @@ namespace ProjectEuler
     {
         private static void Main(string[] args)
         {
+            var loader = new ProblemLoader<Problem000>();
+            var resource = loader.LoadResource();
+
             var sw = new Stopwatch();
             sw.Start();
-
-                Problem_042();
+            {
+                var problem = loader.LoadProblem();
+                problem.Solve(resource);
+            }
 
             sw.Stop();
             Console.WriteLine();
