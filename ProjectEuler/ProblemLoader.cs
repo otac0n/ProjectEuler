@@ -3,7 +3,14 @@
     using System;
     using System.IO;
 
-    public class ProblemLoader<T> where T : Problem, new()
+    public interface IProblemLoader
+    {
+        string LoadResource();
+        ResultAttribute LoadResultInfo();
+        Problem LoadProblem();
+    }
+
+    public class ProblemLoader<T> : IProblemLoader where T : Problem, new()
     {
         private Type problemType;
 
@@ -29,7 +36,7 @@
                 }
                 else
                 {
-                    return File.ReadAllText(resourceName + ".txt");
+                    return File.ReadAllText(@"Resources\" + resourceName + ".txt");
                 }
             }
         }

@@ -16,37 +16,63 @@ namespace ProjectEuler
     {
         private static void Main(string[] args)
         {
-            Console.ResetColor();
-
-            var loader = new ProblemLoader<Problem020>();
-            var resource = loader.LoadResource();
-            var resultInfo = loader.LoadResultInfo();
-            var result = string.Empty;
+            var loaders = new List<IProblemLoader>
+            {
+                new ProblemLoader<Problem001>(),
+                new ProblemLoader<Problem002>(),
+                new ProblemLoader<Problem003>(),
+                new ProblemLoader<Problem004>(),
+                new ProblemLoader<Problem005>(),
+                new ProblemLoader<Problem006>(),
+                new ProblemLoader<Problem007>(),
+                new ProblemLoader<Problem008>(),
+                new ProblemLoader<Problem009>(),
+                new ProblemLoader<Problem010>(),
+                new ProblemLoader<Problem011>(),
+                new ProblemLoader<Problem012>(),
+                new ProblemLoader<Problem013>(),
+                new ProblemLoader<Problem014>(),
+                new ProblemLoader<Problem015>(),
+                new ProblemLoader<Problem016>(),
+                new ProblemLoader<Problem017>(),
+                new ProblemLoader<Problem018>(),
+                new ProblemLoader<Problem019>(),
+                new ProblemLoader<Problem020>(),
+            };
 
             var sw = new Stopwatch();
-            sw.Start();
 
-            var problem = loader.LoadProblem();
-            result = problem.Solve(resource);
-
-            sw.Stop();
-            if (!string.IsNullOrEmpty(resultInfo.Expected))
+            foreach (var loader in loaders)
             {
-                if (result == resultInfo.Expected)
+                Console.ResetColor();
+                var resource = loader.LoadResource();
+                var resultInfo = loader.LoadResultInfo();
+                var result = string.Empty;
+
+                sw.Start();
+
+                var problem = loader.LoadProblem();
+                result = problem.Solve(resource);
+
+                sw.Stop();
+                if (!string.IsNullOrEmpty(resultInfo.Expected))
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    if (result == resultInfo.Expected)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                 }
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-            }
 
-            Console.WriteLine(resultInfo.Name + " = " + result);
+                Console.WriteLine(resultInfo.Name + " = " + result);
+            }
             Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("Solution Found in " + sw.Elapsed + ".");

@@ -13,10 +13,22 @@ namespace ProjectEuler
             internal set;
         }
 
-        internal long LargestValueChecked
+        public long LargestValueChecked
         {
             get;
-            set;
+            internal set;
+        }
+
+        public long NextPrimeSquared
+        {
+            get;
+            internal set;
+        }
+
+        public int NextPrimeSquaredIndex
+        {
+            get;
+            internal set;
         }
     }
 }

@@ -28,6 +28,10 @@
             2237,2239,2243,2251,2267,2269,2273,2281,2287,2293,2297,2309
         };
 
+        private static readonly long smallPrimesNextPrimeSquared = 2809;
+
+        private static readonly int smallPrimesNextPrimeSquaredIndex = 15;
+
         public static long ModPow(long @base, long exponent, long modulus)
         {
             long result = 1;
@@ -68,14 +72,21 @@
             }
         }
 
-        public static PrimesList GetFirstNPrimes(long number)
+        private static PrimesList CreatePrimesList()
         {
-            var primes = new PrimesList
+            return new PrimesList
             {
                 Primes = smallPrimes.ToList(),
                 LargestValueChecked = smallPrimes[smallPrimes.Length - 1],
+                NextPrimeSquared = smallPrimesNextPrimeSquared,
+                NextPrimeSquaredIndex = smallPrimesNextPrimeSquaredIndex,
             };
+        }
 
+        public static PrimesList GetFirstNPrimes(long number)
+        {
+            var primes = CreatePrimesList();
+                
             GetFirstNPrimes(number, primes);
 
             return primes;
@@ -83,111 +94,97 @@
 
         public static PrimesList GetPrimesBelow(long max)
         {
-            var primes = new PrimesList
-            {
-                Primes = smallPrimes.ToList(),
-                LargestValueChecked = smallPrimes[smallPrimes.Length - 1],
-            };
+            var primes = CreatePrimesList();
 
             GetPrimesBelow(max, primes);
 
             return primes;
         }
 
-        public static void GetFirstNPrimes(long number, PrimesList currentState)
+        public static void GetFirstNPrimes(long number, PrimesList state)
         {
-            var primes = currentState.Primes;
-            int primeIndex = primes.Count - 1;
-            int compositeIndex = primeIndex + 1;
-            long largestAdded = currentState.LargestValueChecked;
+            var primes = state.Primes;
+            var nextPrimeSquared = state.NextPrimeSquared;
+            var nextPrimeSquaredIndex = state.NextPrimeSquaredIndex;
+            var num = state.LargestValueChecked + 1;
 
-            do
+            if (primes.Count < number)
             {
-                if (primeIndex == primes.Count - 1)
+                for ( ; ; num++)
                 {
-                    if (primes.Count >= number)
+                    if (num == nextPrimeSquared)
                     {
-                        break;
+                        nextPrimeSquaredIndex++;
+                        nextPrimeSquared = primes[nextPrimeSquaredIndex];
+                        nextPrimeSquared *= nextPrimeSquared;
+
+                        continue;
                     }
 
-                    for (long num = largestAdded + 1; num <= largestAdded + 1000; num++)
+                    bool prime = true;
+                    for (var primeIndex = 0; primeIndex < nextPrimeSquaredIndex; primeIndex++)
+                    {
+                        if (num % primes[primeIndex] == 0)
+                        {
+                            prime = false;
+                            break;
+                        }
+                    }
+
+                    if (prime)
                     {
                         primes.Add(num);
-                    }
 
-                    largestAdded = largestAdded + 1000;
-
-                    primeIndex = 0;
-                }
-
-                var prime = primes[primeIndex];
-
-                for (int check = compositeIndex; check < primes.Count; )
-                {
-                    if (primes[check] % prime == 0)
-                    {
-                        primes.RemoveAt(check);
-                    }
-                    else
-                    {
-                        check++;
+                        if (primes.Count >= number)
+                        {
+                            break;
+                        }
                     }
                 }
-
-                primeIndex++;
-                compositeIndex = Math.Max(compositeIndex, primeIndex + 1);
             }
-            while (primeIndex < primes.Count);
 
-            currentState.LargestValueChecked = largestAdded;
+            state.NextPrimeSquared = nextPrimeSquared;
+            state.NextPrimeSquaredIndex = nextPrimeSquaredIndex;
+            state.LargestValueChecked = num;
         }
 
-        public static void GetPrimesBelow(long max, PrimesList currentState)
+        public static void GetPrimesBelow(long max, PrimesList state)
         {
-            var primes = currentState.Primes;
-            int primeIndex = primes.Count - 1;
-            int compositeIndex = primeIndex + 1;
-            long largestAdded = currentState.LargestValueChecked;
+            var primes = state.Primes;
+            var nextPrimeSquared = state.NextPrimeSquared;
+            var nextPrimeSquaredIndex = state.NextPrimeSquaredIndex;
+            var num = state.LargestValueChecked + 1;
 
-            do
+            for ( ; num <= max; num++)
             {
-                if (primeIndex == primes.Count - 1)
+                if (num == nextPrimeSquared)
                 {
-                    if (largestAdded >= max)
+                    nextPrimeSquaredIndex++;
+                    nextPrimeSquared = primes[nextPrimeSquaredIndex];
+                    nextPrimeSquared *= nextPrimeSquared;
+
+                    continue;
+                }
+
+                bool prime = true;
+                for (var primeIndex = 0; primeIndex < nextPrimeSquaredIndex; primeIndex++)
+                {
+                    if (num % primes[primeIndex] == 0)
                     {
+                        prime = false;
                         break;
                     }
-
-                    for (long num = largestAdded + 1; num <= largestAdded + 1000 && num <= max; num++)
-                    {
-                        primes.Add(num);
-                    }
-
-                    largestAdded = Math.Min(largestAdded + 1000, max);
-
-                    primeIndex = 0;
                 }
 
-                var prime = primes[primeIndex];
-
-                for (int check = compositeIndex; check < primes.Count; )
+                if (prime)
                 {
-                    if (primes[check] % prime == 0)
-                    {
-                        primes.RemoveAt(check);
-                    }
-                    else
-                    {
-                        check++;
-                    }
+                    primes.Add(num);
                 }
-
-                primeIndex++;
-                compositeIndex = Math.Max(compositeIndex, primeIndex + 1);
             }
-            while (primeIndex < primes.Count);
 
-            currentState.LargestValueChecked = largestAdded;
+            state.NextPrimeSquared = nextPrimeSquared;
+            state.NextPrimeSquaredIndex = nextPrimeSquaredIndex;
+            state.LargestValueChecked = num - 1;
         }
         public static bool IsPrime(long value, PrimesList primes)
         {
