@@ -63,6 +63,26 @@
             return num == reversed;
         }
 
+        public static long Square(long index)
+        {
+            return index * index;
+        }
+        
+        public static long Triangle(long index)
+        {
+            return index % 2 == 0 ? (index / 2) * (index + 1) : ((index + 1) / 2) * index;
+        }
+
+        public static long Pentagon(long index)
+        {
+            return index % 2 == 0 ? (index / 2) * (3 * index - 1) : ((3 * index - 1) / 2) * index;
+        }
+
+        public static long Hexagon(long index)
+        {
+            return index * (2 * index - 1);
+        }
+
         public static bool IsSquare(long num)
         {
             var sqrt = (long)Math.Sqrt(num);

@@ -96,6 +96,27 @@
     <Compile Include="Problems\Problem038.cs" />
     <Compile Include="Problems\Problem039.cs" />
     <Compile Include="Problems\Problem040.cs" />
+    <Compile Include="Problems\Problem041.cs" />
+    <Compile Include="Problems\Problem042.cs" />
+    <Compile Include="Problems\Problem043.cs" />
+    <Compile Include="Problems\Problem044.cs" />
+    <Compile Include="Problems\Problem045.cs" />
+    <Compile Include="Problems\Problem046.cs" />
+    <Compile Include="Problems\Problem047.cs" />
+    <Compile Include="Problems\Problem048.cs" />
+    <Compile Include="Problems\Problem049.cs" />
+    <Compile Include="Problems\Problem050.cs" />
+    <Compile Include="Problems\Problem052.cs" />
+    <Compile Include="Problems\Problem054.cs" />
+    <Compile Include="Problems\Problem059.cs" />
+    <Compile Include="Problems\Problem067.cs" />
+    <Compile Include="Problems\Problem076.cs" />
+    <Compile Include="Problems\Problem079.cs" />
+    <Compile Include="Problems\Problem081.cs" />
+    <Compile Include="Problems\Problem089.cs" />
+    <Compile Include="Problems\Problem205.cs" />
+    <Compile Include="Problems\Problem206.cs" />
+    <Compile Include="Problems\Problem293.cs" />
     <Content Include="Resources\cipher1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
