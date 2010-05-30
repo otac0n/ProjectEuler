@@ -38,510 +38,53 @@ namespace ProjectEuler
                 new ProblemLoader<Problem018>(),
                 new ProblemLoader<Problem019>(),
                 new ProblemLoader<Problem020>(),
+                new ProblemLoader<Problem021>(),
+                new ProblemLoader<Problem022>(),
+                new ProblemLoader<Problem023>(),
+                new ProblemLoader<Problem024>(),
+                new ProblemLoader<Problem025>(),
+                new ProblemLoader<Problem026>(),
+                new ProblemLoader<Problem027>(),
+                new ProblemLoader<Problem028>(),
+                new ProblemLoader<Problem029>(),
+                new ProblemLoader<Problem030>(),
             };
 
             var sw = new Stopwatch();
+            var previousElapsed = new TimeSpan();
+            Console.SetWindowSize(80, 80);
 
             foreach (var loader in loaders)
             {
                 Console.ResetColor();
+
                 var resource = loader.LoadResource();
                 var resultInfo = loader.LoadResultInfo();
                 var result = string.Empty;
 
-                sw.Start();
+                Console.Write(loader.ProblemName + ": " + resultInfo.Name.PadRight(11, ' ') + " = ");
 
+                sw.Start();
                 var problem = loader.LoadProblem();
                 result = problem.Solve(resource);
-
                 sw.Stop();
-                if (!string.IsNullOrEmpty(resultInfo.Expected))
-                {
-                    if (result == resultInfo.Expected)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    }
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                }
 
-                Console.WriteLine(resultInfo.Name + " = " + result);
+                Console.ForegroundColor = string.IsNullOrEmpty(resultInfo.Expected) ? ConsoleColor.Yellow : (result == resultInfo.Expected ? ConsoleColor.Green : ConsoleColor.Red);
+                Console.Write(result.PadRight(26 - Math.Max(resultInfo.Name.Length, 11)));
+
+                var delta = sw.Elapsed - previousElapsed;
+                Console.ForegroundColor = delta > TimeSpan.FromSeconds(1) ? ConsoleColor.Red : ConsoleColor.Cyan;
+                Console.WriteLine("+" + delta);
+                previousElapsed = sw.Elapsed;
             }
             Console.ResetColor();
             Console.WriteLine();
-            Console.WriteLine("Solution Found in " + sw.Elapsed + ".");
+            Console.Write("Solution Found in ");
+            Console.ForegroundColor = sw.Elapsed > TimeSpan.FromSeconds(loaders.Count) ? ConsoleColor.Red : ConsoleColor.Cyan;
+            Console.Write(sw.Elapsed);
+            Console.ResetColor();
+            Console.WriteLine(".");
             Console.ReadKey(true);
-        }
-
-        /// <summary>
-        /// Let d(n) be defined as the sum of proper divisors of n (numbers less than n which divide evenly into n).
-        /// If d(a) = b and d(b) = a, where a ≠ b, then a and b are an amicable pair and each of a and b are called amicable numbers.
-        /// 
-        /// For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55 and 110; therefore d(220) = 284. The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
-        /// 
-        /// Evaluate the sum of all the amicable numbers under 10000.
-        /// </summary>
-        private static void Problem_021()
-        {
-            var primes = PrimeMath.GetFirstNPrimes(1000);
-            var sums = new Dictionary<long, long>();
-
-            for (int i = 2; i < 10000; i++)
-            {
-                var allFactors = PrimeMath.GetAllFactors(PrimeMath.Factor(i, primes));
-                allFactors.Remove(i);
-                sums[i] = allFactors.Sum();
-            }
-
-            var amicable = from a in sums
-                           where sums.ContainsKey(a.Value)
-                           where sums[a.Value] == a.Key
-                           where a.Key != a.Value
-                           select a.Key;
-
-            var sum = amicable.Sum();
-
-            Console.WriteLine("sum = " + sum);
-        }
-
-        /// <summary>
-        /// Using names.txt  (right click and 'Save Link/Target As...'), a 46K text file containing over five-thousand first names, begin by sorting it into alphabetical order. Then working out the alphabetical value for each name, multiply this value by its alphabetical position in the list to obtain a name score.
-        /// 
-        /// For example, when the list is sorted into alphabetical order, COLIN, which is worth 3 + 15 + 12 + 9 + 14 = 53, is the 938th name in the list. So, COLIN would obtain a score of 938 × 53 = 49714.
-        /// 
-        /// What is the total of all the name scores in the file?
-        /// </summary>
-        private static void Problem_022()
-        {
-            var text = File.ReadAllText("names.txt");
-
-            var names = from n in text.Split(',')
-                        let name = n.Substring(1, n.Length - 2)
-                        orderby name
-                        select name;
-
-            long total = 0;
-
-            var offset = 'A' - 1;
-            int i = 1;
-            foreach (var name in names)
-            {
-                var sum = 0;
-                foreach (var ch in name)
-                {
-                    sum += ch - offset;
-                }
-
-                total += i * sum;
-                i++;
-            }
-
-            Console.WriteLine("total = " + total);
-        }
-
-        /// <summary>
-        /// A perfect number is a number for which the sum of its proper divisors is exactly equal to the number. For example, the sum of the proper divisors of 28 would be 1 + 2 + 4 + 7 + 14 = 28, which means that 28 is a perfect number.
-        /// 
-        /// A number n is called deficient if the sum of its proper divisors is less than n and it is called abundant if this sum exceeds n.
-        /// 
-        /// As 12 is the smallest abundant number, 1 + 2 + 3 + 4 + 6 = 16, the smallest number that can be written as the sum of two abundant numbers is 24. By mathematical analysis, it can be shown that all integers greater than 28123 can be written as the sum of two abundant numbers. However, this upper limit cannot be reduced any further by analysis even though it is known that the greatest number that cannot be expressed as the sum of two abundant numbers is less than this limit.
-        /// 
-        /// Find the sum of all the positive integers which cannot be written as the sum of two abundant numbers.
-        /// </summary>
-        private static void Problem_023()
-        {
-            long upperLimit = 28123;
-
-            var primes = PrimeMath.GetPrimesBelow(28123);
-
-            var abundantNumbers = new List<int>();
-
-            for (long i = 1; i <= upperLimit; i++)
-            {
-                var factors = PrimeMath.GetAllFactors(PrimeMath.Factor(i, primes));
-                factors.Remove(i);
-
-                if (factors.Sum() > i)
-                {
-                    abundantNumbers.Add((int)i);
-                }
-            }
-
-            var allNumbers = new int[upperLimit];
-            for (int i = 1; i <= upperLimit; i++)
-            {
-                allNumbers[i - 1] = i;
-            }
-
-            for (int i = 0; i < abundantNumbers.Count; i++)
-            {
-                int numI = abundantNumbers[i];
-
-                if (numI > upperLimit)
-                {
-                    break;
-                }
-
-                for (int j = 0; j < abundantNumbers.Count; j++)
-                {
-                    int numJ = numI + abundantNumbers[j];
-
-                    if (numJ > upperLimit)
-                    {
-                        break;
-                    }
-
-                    allNumbers[numJ - 1] = 0;
-                }
-            }
-
-            var sum = allNumbers.Sum();
-
-            Console.WriteLine("sum = " + sum);
-        }
-
-        /// <summary>
-        /// A permutation is an ordered arrangement of objects. For example, 3124 is one possible permutation of the digits 1, 2, 3 and 4. If all of the permutations are listed numerically or alphabetically, we call it lexicographic order. The lexicographic permutations of 0, 1 and 2 are:
-        /// 
-        /// 012   021   102   120   201   210
-        /// 
-        /// What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9?
-        /// </summary>
-        private static void Problem_024()
-        {
-            var ch = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-
-            var permutations = new Permutations<char>(ch);
-            IList<char> permutation = permutations.Skip(999999).First();
-            var value = new string(permutation.ToArray());
-            Console.WriteLine("value = " + value);
-        }
-
-        /// <summary>
-        /// The Fibonacci sequence is defined by the recurrence relation:
-        /// 
-        ///     F_(n) = F_(n−1) + F_(n−2), where F_(1) = 1 and F_(2) = 1.
-        /// 
-        /// Hence the first 12 terms will be:
-        /// 
-        ///     F_(1) = 1
-        ///     F_(2) = 1
-        ///     F_(3) = 2
-        ///     F_(4) = 3
-        ///     F_(5) = 5
-        ///     F_(6) = 8
-        ///     F_(7) = 13
-        ///     F_(8) = 21
-        ///     F_(9) = 34
-        ///     F_(10) = 55
-        ///     F_(11) = 89
-        ///     F_(12) = 144
-        /// 
-        /// The 12th term, F_(12), is the first term to contain three digits.
-        /// 
-        /// What is the first term in the Fibonacci sequence to contain 1000 digits?
-        /// </summary>
-        private static void Problem_025()
-        {
-            BigInteger thousandDigits = 1;
-            for (int i = 1; i < 1000; i++)
-            {
-                thousandDigits *= 10;
-            }
-
-            BigInteger nm1 = 1;
-            BigInteger nm2 = 0;
-
-            long term = 2;
-
-            while (true)
-            {
-                BigInteger n = nm1 + nm2;
-
-                if (n >= thousandDigits)
-                {
-                    Console.WriteLine("first = " + term);
-                    return;
-                }
-
-                term++;
-                nm2 = nm1;
-                nm1 = n;
-            }
-        }
-
-        /// <summary>
-        /// A unit fraction contains 1 in the numerator. The decimal representation of the unit fractions with denominators 2 to 10 are given:
-        /// 
-        ///     1/2  = 	0.5
-        ///     1/3  = 	0.(3)
-        ///     1/4  = 	0.25
-        ///     1/5  = 	0.2
-        ///     1/6  = 	0.1(6)
-        ///     1/7  = 	0.(142857)
-        ///     1/8  = 	0.125
-        ///     1/9  = 	0.(1)
-        ///     1/10 = 	0.1
-        /// 
-        /// Where 0.1(6) means 0.166666..., and has a 1-digit recurring cycle. It can be seen that 1/7 has a 6-digit recurring cycle.
-        /// 
-        /// Find the value of d &lt; 1000 for which 1/d contains the longest recurring cycle in its decimal fraction part.
-        /// </summary>
-        private static void Problem_026()
-        {
-            var primes = PrimeMath.GetFirstNPrimes(10);
-
-            Func<Dictionary<long, int>, long> numFromFactors = (factors) =>
-            {
-                long product = 1;
-                foreach (var factor in factors)
-                {
-                    for (int i = 0; i < factor.Value; i++)
-                    {
-                        product *= factor.Key;
-                    }
-                }
-
-                return product;
-            };
-
-            Func<long, int> getRepitition = (long num) =>
-            {
-                long dividend = 10;
-
-                int reps = 1;
-                while (true)
-                {
-                    var quotient = dividend / num;
-                    var remainder = dividend % num;
-
-                    if (remainder == 1)
-                    {
-                        return reps;
-                    }
-                    else if (remainder == 0)
-                    {
-                        return 0;
-                    }
-                    
-                    reps++;
-                    dividend = remainder *= 10;
-                }
-            };
-
-            var maxReps = 0;
-            var maxRepsValue = 0;
-            for (int i = 2; i < 1000; i++)
-            {
-                var factors = PrimeMath.Factor(i, primes);
-                factors.Remove(2);
-                factors.Remove(5);
-
-                if (factors.Count == 0)
-                {
-                    continue;
-                }
-
-                var num = numFromFactors(factors);
-                var reps = getRepitition(num);
-                if (reps > maxReps)
-                {
-                    maxReps = reps;
-                    maxRepsValue = i;
-                }
-            }
-            
-            Console.WriteLine("value = " + maxRepsValue);
-        }
-
-        /// <summary>
-        /// Euler published the remarkable quadratic formula:
-        /// 
-        /// n² + n + 41
-        /// 
-        /// It turns out that the formula will produce 40 primes for the consecutive values n = 0 to 39. However, when n = 40, 40^(2) + 40 + 41 = 40(40 + 1) + 41 is divisible by 41, and certainly when n = 41, 41² + 41 + 41 is clearly divisible by 41.
-        /// 
-        /// Using computers, the incredible formula  n² − 79n + 1601 was discovered, which produces 80 primes for the consecutive values n = 0 to 79. The product of the coefficients, −79 and 1601, is −126479.
-        /// 
-        /// Considering quadratics of the form:
-        /// 
-        ///     n² + an + b, where |a| &lt; 1000 and |b| &lt; 1000
-        /// 
-        ///     where |n| is the modulus/absolute value of n
-        ///     e.g. |11| = 11 and |−4| = 4
-        /// 
-        /// Find the product of the coefficients, a and b, for the quadratic expression that produces the maximum number of primes for consecutive values of n, starting with n = 0.
-        /// </summary>
-        private static void Problem_027()
-        {
-            var primes = PrimeMath.GetPrimesBelow(1000);
-
-            var bValues = primes.Primes.Where(p => p < 1000).ToList();
-
-            int max = 0;
-            long maxProduct = 0;
-            bool isPrime = false;
-
-            foreach (var b in bValues)
-            {
-                for (int a = -999; a < 1000; a++)
-                {
-                    for (int n = 0; ; n++)
-                    {
-                        var value = n * n + a * n + b;
-                        isPrime = PrimeMath.IsPrime(value, primes);
-
-                        if (!isPrime)
-                        {
-                            if (n - 1 > max)
-                            {
-                                max = n - 1;
-                                maxProduct = a * b;
-                            }
-
-                            break;
-                        }
-                    }
-                }
-            }
-
-            Console.WriteLine("product = " + maxProduct);
-        }
-
-        /// <summary>
-        /// Starting with the number 1 and moving to the right in a clockwise direction a 5 by 5 spiral is formed as follows:
-        /// 
-        /// 21 22 23 24 25
-        /// 20  7  8  9 10
-        /// 19  6  1  2 11
-        /// 18  5  4  3 12
-        /// 17 16 15 14 13
-        /// 
-        /// It can be verified that the sum of the numbers on the diagonals is 101.
-        /// 
-        /// What is the sum of the numbers on the diagonals in a 1001 by 1001 spiral formed in the same way?
-        /// </summary>
-        private static void Problem_028()
-        {
-            var size = 1001;
-
-            var max = size * size;
-
-            var total = 0;
-            var inc = 2;
-            var counter = -1;
-            for (int i = 1; i <= max; i += inc)
-            {
-                total += i;
-                counter++;
-
-                if (counter == 4)
-                {
-                    counter = 0;
-                    inc += 2;
-                }
-            }
-
-            Console.WriteLine("total = " + total);
-        }
-
-        /// <summary>
-        /// Consider all integer combinations of a^(b) for 2 ≤ a  ≤ 5 and 2 ≤ b  ≤ 5:
-        /// 
-        ///     2^(2)=4, 2^(3)=8, 2^(4)=16, 2^(5)=32
-        ///     3^(2)=9, 3^(3)=27, 3^(4)=81, 3^(5)=243
-        ///     4^(2)=16, 4^(3)=64, 4^(4)=256, 4^(5)=1024
-        ///     5^(2)=25, 5^(3)=125, 5^(4)=625, 5^(5)=3125
-        /// 
-        /// If they are then placed in numerical order, with any repeats removed, we get the following sequence of 15 distinct terms:
-        /// 
-        /// 4, 8, 9, 16, 25, 27, 32, 64, 81, 125, 243, 256, 625, 1024, 3125
-        /// 
-        /// How many distinct terms are in the sequence generated by a^(b) for 2 ≤ a ≤ 100 and 2 ≤ b ≤ 100?
-        /// </summary>
-        private static void Problem_029()
-        {
-            var primes = PrimeMath.GetPrimesBelow(100);
-
-            var distinct = new List<Dictionary<long, int>>();
-
-            for (int a = 2; a <= 100; a++)
-            {
-                var factorsOfA = PrimeMath.Factor(a, primes);
-                
-                for (int b = 2; b <= 100; b++)
-                {
-                    var factors = factorsOfA.ToDictionary(f => f.Key, f => f.Value * b);
-
-                    var exists = (from i in distinct
-                                  where !(from f in factors
-                                          where !i.ContainsKey(f.Key) || i[f.Key] != f.Value
-                                          select f).Any()
-                                  where !(from f in i
-                                          where !factors.ContainsKey(f.Key)
-                                          select f).Any()
-                                  select i).Any();
-
-                    if (!exists)
-                    {
-                        distinct.Add(factors);
-                    }
-                }
-            }
-
-            var count = distinct.Count;
-
-            Console.WriteLine("count = " + count);
-        }
-
-        /// <summary>
-        /// Surprisingly there are only three numbers that can be written as the sum of fourth powers of their digits:
-        /// 
-        ///     1634 = 1^(4) + 6^(4) + 3^(4) + 4^(4)
-        ///     8208 = 8^(4) + 2^(4) + 0^(4) + 8^(4)
-        ///     9474 = 9^(4) + 4^(4) + 7^(4) + 4^(4)
-        /// 
-        /// As 1 = 1^(4) is not a sum it is not included.
-        /// 
-        /// The sum of these numbers is 1634 + 8208 + 9474 = 19316.
-        /// 
-        /// Find the sum of all the numbers that can be written as the sum of fifth powers of their digits.
-        /// </summary>
-        private static void Problem_030()
-        {
-            long total = 0;
-
-            for (int i = 2; i <= 354294; i++)
-            {
-                var num = i;
-                var dig000001 = num % 10; num /= 10;
-                var dig000010 = num % 10; num /= 10;
-                var dig000100 = num % 10; num /= 10;
-                var dig001000 = num % 10; num /= 10;
-                var dig010000 = num % 10; num /= 10;
-                var dig100000 = num % 10; num /= 10;
-
-                var digitSum =
-                    dig000001 * dig000001 * dig000001 * dig000001 * dig000001 +
-                    dig000010 * dig000010 * dig000010 * dig000010 * dig000010 +
-                    dig000100 * dig000100 * dig000100 * dig000100 * dig000100 +
-                    dig001000 * dig001000 * dig001000 * dig001000 * dig001000 +
-                    dig010000 * dig010000 * dig010000 * dig010000 * dig010000 +
-                    dig100000 * dig100000 * dig100000 * dig100000 * dig100000;
-
-                if (digitSum == i)
-                {
-                    total += i;
-                }
-            }
-
-            Console.WriteLine("total = " + total);
         }
 
         /// <summary>

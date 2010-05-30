@@ -76,6 +76,16 @@
     <Compile Include="Problems\Problem017.cs" />
     <Compile Include="Problems\Problem018.cs" />
     <Compile Include="Problems\Problem019.cs" />
+    <Compile Include="Problems\Problem021.cs" />
+    <Compile Include="Problems\Problem022.cs" />
+    <Compile Include="Problems\Problem023.cs" />
+    <Compile Include="Problems\Problem024.cs" />
+    <Compile Include="Problems\Problem025.cs" />
+    <Compile Include="Problems\Problem026.cs" />
+    <Compile Include="Problems\Problem027.cs" />
+    <Compile Include="Problems\Problem028.cs" />
+    <Compile Include="Problems\Problem029.cs" />
+    <Compile Include="Problems\Problem030.cs" />
     <Content Include="Resources\cipher1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

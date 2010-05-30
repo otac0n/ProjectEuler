@@ -5,6 +5,7 @@
 
     public interface IProblemLoader
     {
+        string ProblemName { get; }
         string LoadResource();
         ResultAttribute LoadResultInfo();
         Problem LoadProblem();
@@ -17,6 +18,14 @@
         public ProblemLoader()
         {
             this.problemType = typeof(T);
+        }
+
+        public string ProblemName
+        {
+            get
+            {
+                return typeof(T).Name;
+            }
         }
 
         public string LoadResource()
