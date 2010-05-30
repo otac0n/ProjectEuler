@@ -14,21 +14,6 @@ namespace ProjectEuler
 {
     public class Program
     {
-        private class PrimesList
-        {
-            public List<long> Primes
-            {
-                get;
-                set;
-            }
-
-            public long LargestValueChecked
-            {
-                get;
-                set;
-            }
-        }
-
         private static void Main(string[] args)
         {
             var sw = new Stopwatch();
@@ -40,359 +25,6 @@ namespace ProjectEuler
             Console.WriteLine();
             Console.WriteLine("Solution Found in " + sw.Elapsed + ".");
             Console.ReadKey(true);
-        }
-
-        private static PrimesList GetPrimesBelow(long max)
-        {
-            var primes = new PrimesList
-            {
-                Primes = new List<long>
-                {
-                    2,
-                },
-                LargestValueChecked = 2,
-            };
-
-            GetPrimesBelow(max, primes);
-
-            return primes;
-        }
-
-        private static void GetPrimesBelow(long max, PrimesList currentState)
-        {
-            var primes = currentState.Primes;
-            int primeIndex = primes.Count - 1;
-            int compositeIndex = primeIndex + 1;
-            long largestAdded = currentState.LargestValueChecked;
-
-            do
-            {
-                if (primeIndex == primes.Count - 1)
-                {
-                    if (largestAdded >= max)
-                    {
-                        break;
-                    }
-
-                    for (long num = largestAdded + 1; num <= largestAdded + 1000 && num <= max; num++)
-                    {
-                        primes.Add(num);
-                    }
-
-                    largestAdded = Math.Min(largestAdded + 1000, max);
-
-                    primeIndex = 0;
-                }
-
-                var prime = primes[primeIndex];
-
-                for (int check = compositeIndex; check < primes.Count; )
-                {
-                    if (primes[check] % prime == 0)
-                    {
-                        primes.RemoveAt(check);
-                    }
-                    else
-                    {
-                        check++;
-                    }
-                }
-
-                primeIndex++;
-                compositeIndex = Math.Max(compositeIndex, primeIndex + 1);
-            }
-            while (primeIndex < primes.Count);
-
-            currentState.LargestValueChecked = largestAdded;
-        }
-
-        private static PrimesList GetFirstNPrimes(long number)
-        {
-            var primes = new PrimesList
-            {
-                Primes = new List<long>
-                {
-                    2,
-                },
-                LargestValueChecked = 2,
-            };
-
-            GetFirstNPrimes(number, primes);
-
-            return primes;
-        }
-
-        private static void GetFirstNPrimes(long number, PrimesList currentState)
-        {
-            var primes = currentState.Primes;
-            int primeIndex = primes.Count - 1;
-            int compositeIndex = primeIndex + 1;
-            long largestAdded = currentState.LargestValueChecked;
-
-            do
-            {
-                if (primeIndex == primes.Count - 1)
-                {
-                    if (primes.Count >= number)
-                    {
-                        break;
-                    }
-
-                    for (long num = largestAdded + 1; num <= largestAdded + 1000; num++)
-                    {
-                        primes.Add(num);
-                    }
-
-                    largestAdded = largestAdded + 1000;
-
-                    primeIndex = 0;
-                }
-
-                var prime = primes[primeIndex];
-
-                for (int check = compositeIndex; check < primes.Count; )
-                {
-                    if (primes[check] % prime == 0)
-                    {
-                        primes.RemoveAt(check);
-                    }
-                    else
-                    {
-                        check++;
-                    }
-                }
-
-                primeIndex++;
-                compositeIndex = Math.Max(compositeIndex, primeIndex + 1);
-            }
-            while (primeIndex < primes.Count);
-
-            currentState.LargestValueChecked = largestAdded;
-        }
-
-        private static bool IsPrime(long value, PrimesList primes)
-        {
-            if (primes.LargestValueChecked >= value)
-            {
-                var l = 0;
-                var r = primes.Primes.Count + 1;
-
-                while (true)
-                {
-                    var p = (r - l) / 2;
-
-                    if (p == 0)
-                    {
-                        return false;
-                    }
-
-                    p += l;
-
-                    var comp = primes.Primes[p-1].CompareTo(value);
-
-                    if (comp == 0)
-                    {
-                        return true;
-                    }
-                    else if (comp < 0)
-                    {
-                        l = p;
-                    }
-                    else if (comp > 0)
-                    {
-                        r = p;
-                    }
-                }
-            }
-            else
-            {
-                var maxFactor = (long)Math.Sqrt(value);
-
-                if (primes.LargestValueChecked < maxFactor)
-                {
-                    if (primes.LargestValueChecked > 1000 && !PrimeMath.IsPossiblyPrime(value, 3))
-                    {
-                        return false;
-                    }
-                }
-
-                int primeIndex = 0;
-                var prime = primes.Primes[primeIndex];
-                while (prime <= maxFactor)
-                {
-                    if (value % prime == 0)
-                    {
-                        return false;
-                    }
-
-                    primeIndex++;
-
-                    if (primeIndex >= primes.Primes.Count)
-                    {
-                        if (primes.LargestValueChecked < maxFactor)
-                        {
-                            primes = GetPrimesBelow(maxFactor);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    prime = primes.Primes[primeIndex];
-                }
-
-                return true;
-            }
-        }
-
-        private static Dictionary<long, int> Factor(long number, PrimesList currentState)
-        {
-            if (number <= 0)
-            {
-                throw new ArgumentOutOfRangeException("number");
-            }
-
-            var primeFactors = new Dictionary<long, int>();
-            int primeIndex = 0;
-
-            while (number != 1)
-            {
-                for (; primeIndex < currentState.Primes.Count; primeIndex++)
-                {
-                    var prime = currentState.Primes[primeIndex];
-
-                    while (number % prime == 0)
-                    {
-                        number /= prime;
-
-                        if (!primeFactors.ContainsKey(prime))
-                        {
-                            primeFactors[prime] = 0;
-                        }
-
-                        primeFactors[prime]++;
-                    }
-                }
-
-                if (number != 1)
-                {
-                    GetFirstNPrimes(currentState.Primes.Count + 100, currentState);
-                }
-            }
-
-            return primeFactors;
-        }
-
-        private static List<long> GetAllFactors(Dictionary<long, int> primeFactors)
-        {
-            return GetSubFactors(primeFactors).ToList();
-        }
-
-        private static IEnumerable<long> GetSubFactors(IEnumerable<KeyValuePair<long, int>> primeFactors)
-        {
-            long product = 1;
-
-            if (primeFactors.Count() == 0)
-            {
-                yield return product;
-                yield break;
-            }
-
-            var factor = primeFactors.First();
-            for (int i = 0; i <= factor.Value; i++, product *= factor.Key)
-            {
-                foreach (var otherFactor in GetSubFactors(primeFactors.Skip(1)))
-                {
-                    yield return otherFactor * product;
-                }
-            }
-
-            yield break;
-        }
-
-        private static long Factorial(long num)
-        {
-            long product = 1;
-            while (num > 0)
-            {
-                product *= num;
-                num--;
-            }
-
-            return product;
-        }
-
-        private static bool IsAnagram(long a, long b)
-        {
-            var aStr = a.ToString();
-            var bStr = b.ToString();
-
-            if (aStr.Length != bStr.Length)
-            {
-                return false;
-            }
-
-            var aChars = new int[10];
-            var bChars = new int[10];
-
-            foreach (var c in aStr)
-            {
-                aChars[c - '0']++;
-            }
-
-            foreach (var c in bStr)
-            {
-                bChars[c - '0']++;
-            }
-
-            for (int i = 0; i < 10; i++)
-            {
-                if (aChars[i] != bChars[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private static bool IsSquare(long num)
-        {
-            var sqrt = (long)Math.Sqrt(num);
-            return sqrt * sqrt == num;
-        }
-
-        private static bool IsTriangular(long num)
-        {
-            var discriminant = 8 * num + 1;
-            return IsSquare(discriminant);
-        }
-
-        private static bool IsPentagonal(long num)
-        {
-            var discriminant = 24 * num + 1;
-
-            var sqrt = (long)Math.Sqrt(discriminant);
-            if (sqrt * sqrt != discriminant)
-            {
-                return false;
-            }
-
-            return (sqrt + 1) % 6 == 0;
-        }
-
-        private static bool IsHexagonal(long num)
-        {
-            var discriminant = 8 * num + 1;
-
-            var sqrt = (long)Math.Sqrt(discriminant);
-            if (sqrt * sqrt != discriminant)
-            {
-                return false;
-            }
-
-            return (sqrt + 1) % 4 == 0;
         }
 
         /// <summary>
@@ -604,7 +236,7 @@ namespace ProjectEuler
         private static void Problem_007()
         {
             var n = 10001;
-            var primes = GetFirstNPrimes(n);
+            var primes = PrimeMath.GetFirstNPrimes(n);
             Console.WriteLine(n + "th = " + primes.Primes[n - 1]);
         }
 
@@ -709,7 +341,7 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_010()
         {
-            var primes = GetPrimesBelow(2000000);
+            var primes = PrimeMath.GetPrimesBelow(2000000);
             var sum = primes.Primes.Sum();
             Console.WriteLine("sum = " + sum);
         }
@@ -858,7 +490,7 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_012()
         {
-            var primes = GetFirstNPrimes(1000);
+            var primes = PrimeMath.GetFirstNPrimes(1000);
 
             var current = 0;
 
@@ -866,7 +498,7 @@ namespace ProjectEuler
             {
                 current += i;
 
-                var factors = Factor(current, primes);
+                var factors = PrimeMath.Factor(current, primes);
 
                 var combinations = 1;
                 foreach (var factorCount in factors.Values)
@@ -1480,12 +1112,12 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_021()
         {
-            var primes = GetFirstNPrimes(1000);
+            var primes = PrimeMath.GetFirstNPrimes(1000);
             var sums = new Dictionary<long, long>();
 
             for (int i = 2; i < 10000; i++)
             {
-                var allFactors = GetAllFactors(Factor(i, primes));
+                var allFactors = PrimeMath.GetAllFactors(PrimeMath.Factor(i, primes));
                 allFactors.Remove(i);
                 sums[i] = allFactors.Sum();
             }
@@ -1549,13 +1181,13 @@ namespace ProjectEuler
         {
             long upperLimit = 28123;
 
-            var primes = GetPrimesBelow(28123);
+            var primes = PrimeMath.GetPrimesBelow(28123);
 
             var abundantNumbers = new List<int>();
 
             for (long i = 1; i <= upperLimit; i++)
             {
-                var factors = GetAllFactors(Factor(i, primes));
+                var factors = PrimeMath.GetAllFactors(PrimeMath.Factor(i, primes));
                 factors.Remove(i);
 
                 if (factors.Sum() > i)
@@ -1686,7 +1318,7 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_026()
         {
-            var primes = GetFirstNPrimes(10);
+            var primes = PrimeMath.GetFirstNPrimes(10);
 
             Func<Dictionary<long, int>, long> numFromFactors = (factors) =>
             {
@@ -1730,7 +1362,7 @@ namespace ProjectEuler
             var maxRepsValue = 0;
             for (int i = 2; i < 1000; i++)
             {
-                var factors = Factor(i, primes);
+                var factors = PrimeMath.Factor(i, primes);
                 factors.Remove(2);
                 factors.Remove(5);
 
@@ -1771,7 +1403,7 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_027()
         {
-            var primes = GetPrimesBelow(1000);
+            var primes = PrimeMath.GetPrimesBelow(1000);
 
             var bValues = primes.Primes.Where(p => p < 1000).ToList();
 
@@ -1786,7 +1418,7 @@ namespace ProjectEuler
                     for (int n = 0; ; n++)
                     {
                         var value = n * n + a * n + b;
-                        isPrime = IsPrime(value, primes);
+                        isPrime = PrimeMath.IsPrime(value, primes);
 
                         if (!isPrime)
                         {
@@ -1858,13 +1490,13 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_029()
         {
-            var primes = GetPrimesBelow(100);
+            var primes = PrimeMath.GetPrimesBelow(100);
 
             var distinct = new List<Dictionary<long, int>>();
 
             for (int a = 2; a <= 100; a++)
             {
-                var factorsOfA = Factor(a, primes);
+                var factorsOfA = PrimeMath.Factor(a, primes);
                 
                 for (int b = 2; b <= 100; b++)
                 {
@@ -2013,16 +1645,16 @@ namespace ProjectEuler
         {
             var digits = new Dictionary<char, long>
             {
-                { '0', Factorial(0) },
-                { '1', Factorial(1) },
-                { '2', Factorial(2) },
-                { '3', Factorial(3) },
-                { '4', Factorial(4) },
-                { '5', Factorial(5) },
-                { '6', Factorial(6) },
-                { '7', Factorial(7) },
-                { '8', Factorial(8) },
-                { '9', Factorial(9) }
+                { '0', NumberTheory.Factorial(0) },
+                { '1', NumberTheory.Factorial(1) },
+                { '2', NumberTheory.Factorial(2) },
+                { '3', NumberTheory.Factorial(3) },
+                { '4', NumberTheory.Factorial(4) },
+                { '5', NumberTheory.Factorial(5) },
+                { '6', NumberTheory.Factorial(6) },
+                { '7', NumberTheory.Factorial(7) },
+                { '8', NumberTheory.Factorial(8) },
+                { '9', NumberTheory.Factorial(9) }
             };
 
             var upperBound = digits['9'] * 7;
@@ -2056,7 +1688,7 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_035()
         {
-            var primes = GetPrimesBelow(1000000);
+            var primes = PrimeMath.GetPrimesBelow(1000000);
 
             var candidates = new List<long>(primes.Primes);
             var circular = new List<long>();
@@ -2167,7 +1799,7 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_037()
         {
-            var primes = GetFirstNPrimes(60239);
+            var primes = PrimeMath.GetFirstNPrimes(60239);
 
             Func<long, long> truncRight = num =>
             {
@@ -2194,7 +1826,7 @@ namespace ProjectEuler
             {
                 if (primeIndex >= primes.Primes.Count)
                 {
-                    GetFirstNPrimes(primes.Primes.Count + 1000, primes);
+                    PrimeMath.GetFirstNPrimes(primes.Primes.Count + 1000, primes);
                 }
 
                 var prime = primes.Primes[primeIndex];
@@ -2203,7 +1835,7 @@ namespace ProjectEuler
                 bool truncatable = true;
                 while (trunc != 0)
                 {
-                    if (!IsPrime(trunc, primes))
+                    if (!PrimeMath.IsPrime(trunc, primes))
                     {
                         truncatable = false;
                         break;
@@ -2220,7 +1852,7 @@ namespace ProjectEuler
                 trunc = truncLeft(prime);
                 while (trunc != 0)
                 {
-                    if (!IsPrime(trunc, primes))
+                    if (!PrimeMath.IsPrime(trunc, primes))
                     {
                         truncatable = false;
                         break;
@@ -2281,7 +1913,7 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_041()
         {
-            var primes = GetPrimesBelow((long)Math.Sqrt(987654321));
+            var primes = PrimeMath.GetPrimesBelow((long)Math.Sqrt(987654321));
 
             long maxPrime = 0;
 
@@ -2296,7 +1928,7 @@ namespace ProjectEuler
                         num += d;
                     }
 
-                    if (IsPrime(num, primes))
+                    if (PrimeMath.IsPrime(num, primes))
                     {
                         Console.WriteLine("largest = " + maxPrime);
                         return;
@@ -2337,7 +1969,7 @@ namespace ProjectEuler
             var count = 0;
             foreach (var word in words)
             {
-                if (IsTriangular(getWordValue(word)))
+                if (NumberTheory.IsTriangular(getWordValue(word)))
                 {
                     count++;
                 }
@@ -2367,7 +1999,7 @@ namespace ProjectEuler
             {
                 var num = hexagon(i);
 
-                if (IsPentagonal(num) && IsTriangular(num))
+                if (NumberTheory.IsPentagonal(num) && NumberTheory.IsTriangular(num))
                 {
                     Console.WriteLine("first = " + num);
                     return;
@@ -2393,7 +2025,7 @@ namespace ProjectEuler
         {
             long upperBound = 1000;
 
-            var primes = GetPrimesBelow(upperBound);
+            var primes = PrimeMath.GetPrimesBelow(upperBound);
 
             long lastNumberSquared = 0;
             var doubleSquares = new List<long>();
@@ -2420,7 +2052,7 @@ namespace ProjectEuler
                 while (num >= upperBound)
                 {
                     upperBound += 1000;
-                    primes = GetPrimesBelow(upperBound);
+                    primes = PrimeMath.GetPrimesBelow(upperBound);
                     updateDoubleSquares();
                 }
 
@@ -2480,7 +2112,7 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_047()
         {
-            var primes = GetPrimesBelow(1000);
+            var primes = PrimeMath.GetPrimesBelow(1000);
 
             var num = 4;
 
@@ -2490,7 +2122,7 @@ namespace ProjectEuler
                 var found = true;
                 for (j = 0; j < num; j++)
                 {
-                    var factors = Factor(i + j, primes);
+                    var factors = PrimeMath.Factor(i + j, primes);
                     if (factors.Count != num)
                     {
                         found = false;
@@ -2547,7 +2179,7 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_049()
         {
-            var primes = GetPrimesBelow(10000);
+            var primes = PrimeMath.GetPrimesBelow(10000);
 
             for (var aIndex = 169; aIndex < primes.Primes.Count - 2; aIndex++)
             {
@@ -2569,17 +2201,17 @@ namespace ProjectEuler
                         break;
                     }
 
-                    if (!IsAnagram(a, b))
+                    if (!NumberTheory.IsAnagram(a, b))
                     {
                         continue;
                     }
 
-                    if (!IsPrime(c, primes))
+                    if (!PrimeMath.IsPrime(c, primes))
                     {
                         continue;
                     }
 
-                    if (IsAnagram(b, c))
+                    if (NumberTheory.IsAnagram(b, c))
                     {
                         Console.WriteLine("composite = " + a.ToString() + b.ToString() + c.ToString());
                         return;
@@ -2600,7 +2232,7 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_050()
         {
-            var primes = GetPrimesBelow(1000000);
+            var primes = PrimeMath.GetPrimesBelow(1000000);
 
             var largesPrime = primes.Primes[primes.Primes.Count - 1];
 
@@ -2658,10 +2290,10 @@ namespace ProjectEuler
                     continue;
                 }
 
-                if (IsAnagram(2 * x, 3 * x) &&
-                    IsAnagram(3 * x, 4 * x) &&
-                    IsAnagram(4 * x, 5 * x) &&
-                    IsAnagram(5 * x, 6 * x))
+                if (NumberTheory.IsAnagram(2 * x, 3 * x) &&
+                    NumberTheory.IsAnagram(3 * x, 4 * x) &&
+                    NumberTheory.IsAnagram(4 * x, 5 * x) &&
+                    NumberTheory.IsAnagram(5 * x, 6 * x))
                 {
                     Console.WriteLine("number = " + x);
                     return;
@@ -3401,12 +3033,12 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_293()
         {
-            var primes = GetFirstNPrimes(20);
+            var primes = PrimeMath.GetFirstNPrimes(20);
 
             var admissibleNumbers = new List<long>(Problem_293_GenerateAdmissible(1, 0, 1000000000, primes).OrderBy(i => i));
 
             var sqrtLargest = (long)Math.Sqrt(admissibleNumbers[admissibleNumbers.Count - 1]);
-            GetPrimesBelow((long)(sqrtLargest * 1.1), primes);
+            PrimeMath.GetPrimesBelow((long)(sqrtLargest * 1.1), primes);
             var largestPrime = primes.Primes[primes.Primes.Count - 1];
 
             var pseudoFortunate = new List<long>();
