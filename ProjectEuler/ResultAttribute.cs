@@ -5,14 +5,20 @@ using System.Text;
 
 namespace ProjectEuler
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-    sealed class ResultAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+    public sealed class ResultAttribute : Attribute
     {
         public ResultAttribute()
         {
         }
 
         public string Name
+        {
+            get;
+            set;
+        }
+
+        public string Expected
         {
             get;
             set;

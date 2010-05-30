@@ -9,7 +9,7 @@
     ///
     /// Find the sum of all the multiples of 3 or 5 below 1000.
     /// </summary>
-    [Result(Name = "sum")]
+    [Result(Name = "sum", Expected = "233168")]
     public class Problem001 : Problem
     {
         public override string Solve(string resource)

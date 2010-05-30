@@ -9,7 +9,7 @@
     /// 
     /// What is the largest prime factor of the number 600851475143 ?
     /// </summary>
-    [Result(Name = "largest")]
+    [Result(Name = "largest", Expected = "6857")]
     public class Problem003 : Problem
     {
         public override string Solve(string resource)

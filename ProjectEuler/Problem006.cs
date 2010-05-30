@@ -15,7 +15,7 @@
     ///
     /// Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
     /// </summary>
-    [Result(Name = "difference")]
+    [Result(Name = "difference", Expected = "25164150")]
     public class Problem006 : Problem
     {
         public override string Solve(string resource)

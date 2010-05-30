@@ -28,7 +28,7 @@
     /// 05886116467109405077541002256983155200055935729725
     /// 71636269561882670428252483600823257530420752963450
     /// </summary>
-    [Result(Name = "max")]
+    [Result(Name = "max", Expected = "40824")]
     public class Problem008 : Problem
     {
         public override string Solve(string resource)

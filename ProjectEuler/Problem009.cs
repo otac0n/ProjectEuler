@@ -14,7 +14,7 @@
     /// Find the product abc.
     ///
     /// </summary>
-    [Result(Name = "product")]
+    [Result(Name = "product", Expected = "31875000")]
     public class Problem009 : Problem
     {
         public override string Solve(string resource)

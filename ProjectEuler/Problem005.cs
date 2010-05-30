@@ -9,7 +9,7 @@
     /// 
     /// What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
     /// </summary>
-    [Result(Name = "smallest")]
+    [Result(Name = "smallest", Expected = "232792560")]
     public class Problem005 : Problem
     {
         public override string Solve(string resource)

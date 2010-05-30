@@ -34,18 +34,11 @@
             }
         }
 
-        public string LoadResultName()
+        public ResultAttribute LoadResultInfo()
         {
-            var resultAttribs = problemType.GetCustomAttributes(typeof(ResultAttribute), false);
+            var resultAttribs = problemType.GetCustomAttributes(typeof(ResultAttribute), true);
 
-            if (resultAttribs.Length == 0)
-            {
-                return "result";
-            }
-            else
-            {
-                return ((ResultAttribute)resultAttribs[0]).Name;
-            }
+            return (ResultAttribute)resultAttribs[0];
         }
 
         public Problem LoadProblem()

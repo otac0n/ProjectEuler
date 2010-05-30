@@ -9,7 +9,7 @@
     /// 
     /// Find the largest palindrome made from the product of two 3-digit numbers.
     /// </summary>
-    [Result(Name = "largest")]
+    [Result(Name = "largest", Expected = "906609")]
     public class Problem004 : Problem
     {
         public override string Solve(string resource)

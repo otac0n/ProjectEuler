@@ -9,7 +9,7 @@
     /// 
     /// What is the 10001st prime number?
     /// </summary>
-    [Result(Name = "10001st")]
+    [Result(Name = "10001st", Expected = "104743")]
     public class Problem007 : Problem
     {
         public override string Solve(string resource)

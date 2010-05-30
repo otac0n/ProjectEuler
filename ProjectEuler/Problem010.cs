@@ -9,7 +9,7 @@
     /// 
     /// Find the sum of all the primes below two million.
     /// </summary>
-    [Result(Name = "sum")]
+    [Result(Name = "sum", Expected = "142913828922")]
     public class Problem010 : Problem
     {
         public override string Solve(string resource)

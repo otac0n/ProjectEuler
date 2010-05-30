@@ -11,7 +11,7 @@
     ///
     /// Find the sum of all the even-valued terms in the sequence which do not exceed four million.
     /// </summary>
-    [Result(Name = "sum")]
+    [Result(Name = "sum", Expected = "4613732")]
     public class Problem002 : Problem
     {
         public override string Solve(string resource)

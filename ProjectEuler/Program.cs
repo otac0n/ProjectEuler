@@ -16,8 +16,11 @@ namespace ProjectEuler
     {
         private static void Main(string[] args)
         {
-            var loader = new ProblemLoader<Problem003>();
+            Console.ResetColor();
+
+            var loader = new ProblemLoader<Problem010>();
             var resource = loader.LoadResource();
+            var resultInfo = loader.LoadResultInfo();
             var result = string.Empty;
 
             var sw = new Stopwatch();
@@ -27,7 +30,24 @@ namespace ProjectEuler
             result = problem.Solve(resource);
 
             sw.Stop();
-            Console.WriteLine(loader.LoadResultName() + " = " + result);
+            if (!string.IsNullOrEmpty(resultInfo.Expected))
+            {
+                if (result == resultInfo.Expected)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+            }
+
+            Console.WriteLine(resultInfo.Name + " = " + result);
+            Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("Solution Found in " + sw.Elapsed + ".");
             Console.ReadKey(true);
