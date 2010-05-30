@@ -48,6 +48,16 @@ namespace ProjectEuler
                 new ProblemLoader<Problem028>(),
                 new ProblemLoader<Problem029>(),
                 new ProblemLoader<Problem030>(),
+                new ProblemLoader<Problem031>(),
+                new ProblemLoader<Problem032>(),
+                new ProblemLoader<Problem033>(),
+                new ProblemLoader<Problem034>(),
+                new ProblemLoader<Problem035>(),
+                new ProblemLoader<Problem036>(),
+                new ProblemLoader<Problem037>(),
+                new ProblemLoader<Problem038>(),
+                new ProblemLoader<Problem039>(),
+                new ProblemLoader<Problem040>(),
             };
 
             var sw = new Stopwatch();
@@ -69,14 +79,15 @@ namespace ProjectEuler
                 result = problem.Solve(resource);
                 sw.Stop();
 
-                Console.ForegroundColor = string.IsNullOrEmpty(resultInfo.Expected) ? ConsoleColor.Yellow : (result == resultInfo.Expected ? ConsoleColor.Green : ConsoleColor.Red);
-                Console.Write(result.PadRight(26 - Math.Max(resultInfo.Name.Length, 11)));
+                Console.ForegroundColor = string.IsNullOrEmpty(resultInfo.Expected) && !(string.IsNullOrEmpty(result) || result == "error") ? ConsoleColor.Yellow : (string.IsNullOrEmpty(result) || result == "error" || result != resultInfo.Expected ? ConsoleColor.Red : ConsoleColor.Green);
+                Console.Write((string.IsNullOrEmpty(result) || result == "error" ? "(error)" : result).PadRight(26 - Math.Max(resultInfo.Name.Length, 11)));
 
                 var delta = sw.Elapsed - previousElapsed;
                 Console.ForegroundColor = delta > TimeSpan.FromSeconds(1) ? ConsoleColor.Red : ConsoleColor.Cyan;
                 Console.WriteLine("+" + delta);
                 previousElapsed = sw.Elapsed;
             }
+
             Console.ResetColor();
             Console.WriteLine();
             Console.Write("Solution Found in ");
@@ -85,345 +96,6 @@ namespace ProjectEuler
             Console.ResetColor();
             Console.WriteLine(".");
             Console.ReadKey(true);
-        }
-
-        /// <summary>
-        /// In England the currency is made up of pound, £, and pence, p, and there are eight coins in general circulation:
-        /// 
-        ///     1p, 2p, 5p, 10p, 20p, 50p, £1 (100p) and £2 (200p).
-        /// 
-        /// It is possible to make £2 in the following way:
-        /// 
-        ///     1×£1 + 1×50p + 2×20p + 1×5p + 1×2p + 3×1p
-        /// 
-        /// How many different ways can £2 be made using any number of coins?
-        /// </summary>
-        private static void Problem_031()
-        {
-            List<int> coinValues = new List<int>
-            {
-                200,
-                100,
-                50,
-                20,
-                10,
-                5,
-                2,
-                1,
-            };
-
-            var counts = new Dictionary<Point, int>();
-
-            Func<Point, int> lookup = null;
-            lookup = point =>
-            {
-                if (counts.ContainsKey(point))
-                {
-                    return counts[point];
-                }
-                else
-                {
-                    var index = point.X;
-                    var value = point.Y;
-                    var coinValue = coinValues[index];
-
-                    if (index == coinValues.Count - 1)
-                    {
-                        var sum = value % coinValue == 0 ? 1 : 0;
-                        counts[point] = sum;
-                        return sum;
-                    }
-                    else
-                    {
-                        var sum = lookup(new Point(index + 1, value));
-                        while (value >= coinValue)
-                        {
-                            value -= coinValue;
-
-                            sum += lookup(new Point(index + 1, value));
-                        }
-
-                        counts[point] = sum;
-                        return sum;
-                    }
-                }
-            };
-
-            var count = lookup(new Point(0, 200));
-
-            Console.WriteLine("count = " + count);
-        }
-
-        /// <summary>
-        /// 145 is a curious number, as 1! + 4! + 5! = 1 + 24 + 120 = 145.
-        /// 
-        /// Find the sum of all numbers which are equal to the sum of the factorial of their digits.
-        /// 
-        /// Note: as 1! = 1 and 2! = 2 are not sums they are not included.
-        /// </summary>
-        private static void Problem_034()
-        {
-            var digits = new Dictionary<char, long>
-            {
-                { '0', NumberTheory.Factorial(0) },
-                { '1', NumberTheory.Factorial(1) },
-                { '2', NumberTheory.Factorial(2) },
-                { '3', NumberTheory.Factorial(3) },
-                { '4', NumberTheory.Factorial(4) },
-                { '5', NumberTheory.Factorial(5) },
-                { '6', NumberTheory.Factorial(6) },
-                { '7', NumberTheory.Factorial(7) },
-                { '8', NumberTheory.Factorial(8) },
-                { '9', NumberTheory.Factorial(9) }
-            };
-
-            var upperBound = digits['9'] * 7;
-            long sum = 0;
-            for (long i = 10; i <= upperBound; i++)
-            {
-                var num = i.ToString();
-
-                long digitalSum = 0;
-
-                for (var j = 0; j < num.Length; j++)
-                {
-                    digitalSum += digits[num[j]];
-                }
-
-                if (digitalSum == i)
-                {
-                    sum += i;
-                }
-            }
-
-            Console.WriteLine("sum = " + sum);
-        }
-
-        /// <summary>
-        /// The number, 197, is called a circular prime because all rotations of the digits: 197, 971, and 719, are themselves prime.
-        /// 
-        /// There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
-        /// 
-        /// How many circular primes are there below one million?
-        /// </summary>
-        private static void Problem_035()
-        {
-            var primes = PrimeMath.GetPrimesBelow(1000000);
-
-            var candidates = new List<long>(primes.Primes);
-            var circular = new List<long>();
-
-            Func<string, string> rotate = num =>
-            {
-                return num.Length == 1 ? num : num.Substring(1, num.Length - 1) + num.Substring(0, 1);
-            };
-
-            while (candidates.Count > 0)
-            {
-                var candidate = candidates[0];
-                candidates.RemoveAt(0);
-
-                var found = new List<long>();
-                found.Add(candidate);
-
-                var mismatch = false;
-
-                var next = rotate(candidate.ToString());
-                var nextLong = long.Parse(next);
-                while (nextLong != candidate)
-                {
-                    found.Add(nextLong);
-                    var index = candidates.IndexOf(nextLong);
-
-                    if (index < 0)
-                    {
-                        mismatch = true;
-                    }
-                    else
-                    {
-                        candidates.RemoveAt(index);
-                    }
-
-                    next = rotate(next);
-                    nextLong = long.Parse(next);
-                }
-
-                if (!mismatch)
-                {
-                    circular.AddRange(found);
-                }
-            }
-
-            var count = circular.Count;
-
-            Console.WriteLine("count = " + count);
-        }
-
-        /// <summary>
-        /// The decimal number, 585 = 1001001001_(2) (binary), is palindromic in both bases.
-        /// 
-        /// Find the sum of all numbers, less than one million, which are palindromic in base 10 and base 2.
-        /// 
-        /// (Please note that the palindromic number, in either base, may not include leading zeros.)
-        /// </summary>
-        private static void Problem_036()
-        {
-            long sum = 0;
-            for (int num = 1; num < 1000000; num += 2)
-            {
-                var dec = Convert.ToString(num, 10);
-                var bin = Convert.ToString(num, 2);
-
-                var isPallindrome = true;
-                for (int i = 0; i < dec.Length; i++)
-                {
-                    if (dec[i] != dec[dec.Length - 1 - i])
-                    {
-                        isPallindrome = false;
-                        break;
-                    }
-                }
-
-                if (!isPallindrome)
-                {
-                    continue;
-                }
-
-                isPallindrome = true;
-                for (int i = 0; i < bin.Length; i++)
-                {
-                    if (bin[i] != bin[bin.Length - 1 - i])
-                    {
-                        isPallindrome = false;
-                        break;
-                    }
-                }
-
-                if (!isPallindrome)
-                {
-                    continue;
-                }
-
-                sum += num;
-            }
-
-            Console.WriteLine("sum = " + sum);
-        }
-
-        /// <summary>
-        /// The number 3797 has an interesting property. Being prime itself, it is possible to continuously remove digits from left to right, and remain prime at each stage: 3797, 797, 97, and 7. Similarly we can work from right to left: 3797, 379, 37, and 3.
-        /// 
-        /// Find the sum of the only eleven primes that are both truncatable from left to right and right to left.
-        /// 
-        /// NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
-        /// </summary>
-        private static void Problem_037()
-        {
-            var primes = PrimeMath.GetFirstNPrimes(60239);
-
-            Func<long, long> truncRight = num =>
-            {
-                return num / 10;
-            };
-
-            Func<long, long> truncLeft = num =>
-            {
-                long digit = 1;
-                while (digit <= num)
-                {
-                    digit *= 10;
-                }
-
-                digit /= 10;
-
-                return num % digit;
-            };
-
-            long sum = 0;
-            var count = 0;
-
-            for (var primeIndex = 4; ; primeIndex++)
-            {
-                if (primeIndex >= primes.Primes.Count)
-                {
-                    PrimeMath.GetFirstNPrimes(primes.Primes.Count + 1000, primes);
-                }
-
-                var prime = primes.Primes[primeIndex];
-
-                var trunc = truncRight(prime);
-                bool truncatable = true;
-                while (trunc != 0)
-                {
-                    if (!PrimeMath.IsPrime(trunc, primes))
-                    {
-                        truncatable = false;
-                        break;
-                    }
-
-                    trunc = truncRight(trunc);
-                }
-
-                if (!truncatable)
-                {
-                    continue;
-                }
-
-                trunc = truncLeft(prime);
-                while (trunc != 0)
-                {
-                    if (!PrimeMath.IsPrime(trunc, primes))
-                    {
-                        truncatable = false;
-                        break;
-                    }
-
-                    trunc = truncLeft(trunc);
-                }
-
-                if (!truncatable)
-                {
-                    continue;
-                }
-
-                sum += prime;
-                count++;
-                if (count == 11)
-                {
-                    break;
-                }
-            }
-
-            Console.WriteLine("sum = " + sum);
-        }
-
-        /// <summary>
-        /// An irrational decimal fraction is created by concatenating the positive integers:
-        /// 
-        /// 0.123456789101112131415161718192021...
-        /// 
-        /// It can be seen that the 12th digit of the fractional part is 1.
-        /// 
-        /// If d_n represents the nth digit of the fractional part, find the value of the following expression.
-        /// 
-        /// d_1 × d_10 × d_100 × d_1000 × d_10000 × d_100000 × d_1000000
-        /// </summary>
-        private static void Problem_040()
-        {
-            var sb = new StringBuilder(1000100);
-
-            for (var i = 1; sb.Length < 1000000; i++)
-            {
-                sb.Append(i);
-            }
-
-            Func<int, int> d = index =>
-            {
-                return (int)(sb[index - 1] - '0');
-            };
-
-            var product = d(1) * d(10) * d(100) * d(1000) * d(10000) * d(100000) * d(1000000);
-            Console.WriteLine("product = " + product);
         }
 
         /// <summary>
