@@ -64,14 +64,17 @@ namespace ProjectEuler
             var previousElapsed = new TimeSpan();
             Console.SetWindowSize(80, 80);
 
+            int zebra = 0;
             foreach (var loader in loaders)
             {
                 Console.ResetColor();
+                Console.BackgroundColor = zebra == 0 ? ConsoleColor.Black : ConsoleColor.Black;
 
                 var resource = loader.LoadResource();
                 var resultInfo = loader.LoadResultInfo();
                 var result = string.Empty;
 
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.Write(loader.ProblemName + ": " + resultInfo.Name.PadRight(11, ' ') + " = ");
 
                 sw.Start();
@@ -83,9 +86,10 @@ namespace ProjectEuler
                 Console.Write((string.IsNullOrEmpty(result) || result == "error" ? "(error)" : result).PadRight(26 - Math.Max(resultInfo.Name.Length, 11)));
 
                 var delta = sw.Elapsed - previousElapsed;
-                Console.ForegroundColor = delta > TimeSpan.FromSeconds(1) ? ConsoleColor.Red : ConsoleColor.Cyan;
+                Console.ForegroundColor = delta > TimeSpan.FromSeconds(0.75) ? ConsoleColor.Red : ConsoleColor.Cyan;
                 Console.WriteLine("+" + delta);
                 previousElapsed = sw.Elapsed;
+                zebra = 1 - zebra;
             }
 
             Console.ResetColor();

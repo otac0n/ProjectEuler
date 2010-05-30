@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
 
     /// <summary>
     /// Consider all integer combinations of a^(b) for 2 ≤ a  ≤ 5 and 2 ≤ b  ≤ 5:
@@ -25,7 +26,26 @@
         {
             var primes = PrimeMath.GetPrimesBelow(100);
 
-            var distinct = new List<Dictionary<long, int>>();
+            var distinct = new Dictionary<string, bool>();
+
+            Func<Dictionary<long, int>, string> factorKey = factors =>
+            {
+                var key = new StringBuilder();
+                bool first = true;
+                foreach (var factor in factors.Keys)
+                {
+                    if (!first)
+                    {
+                        key.Append("+");
+                    }
+
+                    key.Append(factor + "^" + factors[factor]);
+
+                    first = false;
+                }
+
+                return key.ToString();
+            };
 
             for (int a = 2; a <= 100; a++)
             {
@@ -34,20 +54,9 @@
                 for (int b = 2; b <= 100; b++)
                 {
                     var factors = factorsOfA.ToDictionary(f => f.Key, f => f.Value * b);
+                    var key = factorKey(factors);
 
-                    var exists = (from i in distinct
-                                  where !(from f in factors
-                                          where !i.ContainsKey(f.Key) || i[f.Key] != f.Value
-                                          select f).Any()
-                                  where !(from f in i
-                                          where !factors.ContainsKey(f.Key)
-                                          select f).Any()
-                                  select i).Any();
-
-                    if (!exists)
-                    {
-                        distinct.Add(factors);
-                    }
+                    distinct[key] = true;
                 }
             }
 

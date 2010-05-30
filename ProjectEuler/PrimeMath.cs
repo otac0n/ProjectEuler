@@ -262,7 +262,7 @@
             }
         }
 
-        public static Dictionary<long, int> Factor(long number, PrimesList currentState)
+        public static Dictionary<long, int> Factor(long number, PrimesList state)
         {
             if (number <= 0)
             {
@@ -274,9 +274,9 @@
 
             while (number != 1)
             {
-                for (; primeIndex < currentState.Primes.Count; primeIndex++)
+                for (; primeIndex < state.Primes.Count; primeIndex++)
                 {
-                    var prime = currentState.Primes[primeIndex];
+                    var prime = state.Primes[primeIndex];
 
                     while (number % prime == 0)
                     {
@@ -293,7 +293,15 @@
 
                 if (number != 1)
                 {
-                    GetFirstNPrimes(currentState.Primes.Count + 100, currentState);
+                    if (IsPrime(number, state))
+                    {
+                        primeFactors[number] = 1;
+                        break;
+                    }
+                    else
+                    {
+                        GetPrimesBelow(number, state);
+                    }
                 }
             }
 

@@ -20,16 +20,24 @@
         {
             long upperLimit = 28123;
 
-            var primes = PrimeMath.GetPrimesBelow(28123);
+            Func<int, int> sumOfDivisors = num =>
+            {
+                var sum = 0;
+                for (int i = 1; i < num; i++)
+                {
+                    if (num % i == 0)
+                    {
+                        sum += i;
+                    }
+                }
+
+                return sum;
+            };
 
             var abundantNumbers = new List<int>();
-
-            for (long i = 1; i <= upperLimit; i++)
+            for (int i = 1; i <= upperLimit; i++)
             {
-                var factors = PrimeMath.GetAllFactors(PrimeMath.Factor(i, primes));
-                factors.Remove(i);
-
-                if (factors.Sum() > i)
+                if (sumOfDivisors(i) > i)
                 {
                     abundantNumbers.Add((int)i);
                 }
@@ -63,9 +71,7 @@
                 }
             }
 
-            var sum = allNumbers.Sum();
-
-            return sum.ToString();
+            return allNumbers.Sum().ToString();
         }
     }
 }
