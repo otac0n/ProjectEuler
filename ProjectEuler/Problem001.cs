@@ -9,9 +9,10 @@
     ///
     /// Find the sum of all the multiples of 3 or 5 below 1000.
     /// </summary>
+    [Result(Name = "sum")]
     public class Problem001 : Problem
     {
-        public override void Solve(string resource)
+        public override string Solve(string resource)
         {
             var sum = 0;
 
@@ -23,7 +24,7 @@
                 }
             }
 
-            Console.WriteLine("sum = " + sum);
+            return sum.ToString();
         }
     }
 }

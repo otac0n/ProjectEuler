@@ -7,6 +7,6 @@ namespace ProjectEuler
 {
     public abstract class Problem
     {
-        public abstract void Solve(string resource);
+        public abstract string Solve(string resource);
     }
 }

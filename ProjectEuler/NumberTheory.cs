@@ -50,6 +50,19 @@
             return true;
         }
 
+        public static bool IsPalindrome(long num, int @base)
+        {
+            long reversed = 0;
+            long k = num;
+            while (k > 0)
+            {
+                reversed = @base * reversed + k % @base;
+                k = k / @base;
+            }
+            
+            return num == reversed;
+        }
+
         public static bool IsSquare(long num)
         {
             var sqrt = (long)Math.Sqrt(num);

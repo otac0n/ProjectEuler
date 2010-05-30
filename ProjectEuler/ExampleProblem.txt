@@ -4,10 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    [ProblemResource("whatever")]
+    [ProblemResource("")]
+    [Result(Name = "result")]
     public class Problem000 : Problem
     {
-        public override void Solve(string resource)
+        public override string Solve(string resource)
         {
         }
     }

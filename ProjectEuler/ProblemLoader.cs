@@ -22,7 +22,29 @@
             }
             else
             {
-                return File.ReadAllText(((ProblemResourceAttribute)resourceAttribs[0]).ResourceName + ".txt");
+                var resourceName = ((ProblemResourceAttribute)resourceAttribs[0]).ResourceName;
+                if (string.IsNullOrEmpty(resourceName))
+                {
+                    return null;
+                }
+                else
+                {
+                    return File.ReadAllText(resourceName + ".txt");
+                }
+            }
+        }
+
+        public string LoadResultName()
+        {
+            var resultAttribs = problemType.GetCustomAttributes(typeof(ResultAttribute), false);
+
+            if (resultAttribs.Length == 0)
+            {
+                return "result";
+            }
+            else
+            {
+                return ((ResultAttribute)resultAttribs[0]).Name;
             }
         }
 
