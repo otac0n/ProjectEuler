@@ -34,7 +34,7 @@ namespace ProjectEuler
             var sw = new Stopwatch();
             sw.Start();
 
-                Problem_041();
+                Problem_042();
 
             sw.Stop();
             Console.WriteLine();
@@ -2298,14 +2298,9 @@ namespace ProjectEuler
 
                     if (IsPrime(num, primes))
                     {
-                        maxPrime = num;
+                        Console.WriteLine("largest = " + maxPrime);
+                        return;
                     }
-                }
-
-                if (maxPrime > 0)
-                {
-                    Console.WriteLine("largest = " + maxPrime);
-                    return;
                 }
             }
         }
@@ -2321,8 +2316,6 @@ namespace ProjectEuler
         /// </summary>
         private static void Problem_042()
         {
-            var primes = GetPrimesBelow(100);
-
             var text = File.ReadAllText("words.txt");
 
             var words = from n in text.Split(',')
@@ -2344,11 +2337,7 @@ namespace ProjectEuler
             var count = 0;
             foreach (var word in words)
             {
-                var value = getWordValue(word);
-
-                var factors = Factor(8 * value + 1, primes);
-
-                if (!factors.Where(f => f.Value % 2 != 0).Any())
+                if (IsTriangular(getWordValue(word)))
                 {
                     count++;
                 }
