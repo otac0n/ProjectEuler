@@ -66,43 +66,43 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="cipher1.txt">
+    <Content Include="Resources\cipher1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Problem001.cs" />
-    <Compile Include="Problem002.cs" />
-    <Compile Include="Problem003.cs" />
-    <Compile Include="Problem004.cs" />
-    <Compile Include="Problem005.cs" />
-    <Compile Include="Problem006.cs" />
-    <Compile Include="Problem007.cs" />
-    <Compile Include="Problem008.cs" />
-    <Compile Include="Problem009.cs" />
-    <Compile Include="Problem010.cs" />
+    <Compile Include="Problems\Problem001.cs" />
+    <Compile Include="Problems\Problem002.cs" />
+    <Compile Include="Problems\Problem003.cs" />
+    <Compile Include="Problems\Problem004.cs" />
+    <Compile Include="Problems\Problem005.cs" />
+    <Compile Include="Problems\Problem006.cs" />
+    <Compile Include="Problems\Problem007.cs" />
+    <Compile Include="Problems\Problem008.cs" />
+    <Compile Include="Problems\Problem009.cs" />
+    <Compile Include="Problems\Problem010.cs" />
     <Content Include="ExampleProblem.txt" />
-    <Content Include="keylog.txt">
+    <Content Include="Resources\keylog.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="matrix.txt">
+    <Content Include="Resources\matrix.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="names.txt">
+    <Content Include="Resources\names.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="poker.txt">
+    <Content Include="Resources\poker.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="roman.txt">
+    <Content Include="Resources\roman.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sudoku.txt">
+    <Content Include="Resources\sudoku.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="System.Combinatorics.dll" />
-    <Content Include="triangle.txt">
+    <Content Include="Resources\triangle.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="words.txt">
+    <Content Include="Resources\words.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
