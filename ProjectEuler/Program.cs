@@ -34,7 +34,7 @@ namespace ProjectEuler
             var sw = new Stopwatch();
             sw.Start();
 
-                Problem_045();
+                Problem_041();
 
             sw.Stop();
             Console.WriteLine();
@@ -210,7 +210,10 @@ namespace ProjectEuler
 
                 if (primes.LargestValueChecked < maxFactor)
                 {
-                    primes = GetPrimesBelow(maxFactor);
+                    if (primes.LargestValueChecked > 1000 && !PrimeMath.IsPossiblyPrime(value, 3))
+                    {
+                        return false;
+                    }
                 }
 
                 int primeIndex = 0;
@@ -226,7 +229,14 @@ namespace ProjectEuler
 
                     if (primeIndex >= primes.Primes.Count)
                     {
-                        break;
+                        if (primes.LargestValueChecked < maxFactor)
+                        {
+                            primes = GetPrimesBelow(maxFactor);
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
 
                     prime = primes.Primes[primeIndex];
@@ -2149,6 +2159,93 @@ namespace ProjectEuler
         }
 
         /// <summary>
+        /// The number 3797 has an interesting property. Being prime itself, it is possible to continuously remove digits from left to right, and remain prime at each stage: 3797, 797, 97, and 7. Similarly we can work from right to left: 3797, 379, 37, and 3.
+        /// 
+        /// Find the sum of the only eleven primes that are both truncatable from left to right and right to left.
+        /// 
+        /// NOTE: 2, 3, 5, and 7 are not considered to be truncatable primes.
+        /// </summary>
+        private static void Problem_037()
+        {
+            var primes = GetFirstNPrimes(60239);
+
+            Func<long, long> truncRight = num =>
+            {
+                return num / 10;
+            };
+
+            Func<long, long> truncLeft = num =>
+            {
+                long digit = 1;
+                while (digit <= num)
+                {
+                    digit *= 10;
+                }
+
+                digit /= 10;
+
+                return num % digit;
+            };
+
+            long sum = 0;
+            var count = 0;
+
+            for (var primeIndex = 4; ; primeIndex++)
+            {
+                if (primeIndex >= primes.Primes.Count)
+                {
+                    GetFirstNPrimes(primes.Primes.Count + 1000, primes);
+                }
+
+                var prime = primes.Primes[primeIndex];
+
+                var trunc = truncRight(prime);
+                bool truncatable = true;
+                while (trunc != 0)
+                {
+                    if (!IsPrime(trunc, primes))
+                    {
+                        truncatable = false;
+                        break;
+                    }
+
+                    trunc = truncRight(trunc);
+                }
+
+                if (!truncatable)
+                {
+                    continue;
+                }
+
+                trunc = truncLeft(prime);
+                while (trunc != 0)
+                {
+                    if (!IsPrime(trunc, primes))
+                    {
+                        truncatable = false;
+                        break;
+                    }
+
+                    trunc = truncLeft(trunc);
+                }
+
+                if (!truncatable)
+                {
+                    continue;
+                }
+
+                sum += prime;
+                count++;
+                if (count == 11)
+                {
+                    break;
+                }
+            }
+
+            Console.WriteLine("sum = " + sum);
+        }
+
+        /// <summary>
         /// An irrational decimal fraction is created by concatenating the positive integers:
         /// 
         /// 0.123456789101112131415161718192021...
@@ -2175,6 +2272,42 @@ namespace ProjectEuler
 
             var product = d(1) * d(10) * d(100) * d(1000) * d(10000) * d(100000) * d(1000000);
             Console.WriteLine("product = " + product);
+        }
+
+        /// <summary>
+        /// We shall say that an n-digit number is pandigital if it makes use of all the digits 1 to n exactly once. For example, 2143 is a 4-digit pandigital and is also prime.
+        ///
+        /// What is the largest n-digit pandigital prime that exists?
+        /// </summary>
+        private static void Problem_041()
+        {
+            var primes = GetPrimesBelow((long)Math.Sqrt(987654321));
+
+            long maxPrime = 0;
+
+            for (int i = 9; i >= 1; i--)
+            {
+                foreach (IList<int> digits in new Permutations<int>(Enumerable.Range(1, i).ToList()))
+                {
+                    long num = 0;
+                    foreach (var d in digits)
+                    {
+                        num *= 10;
+                        num += d;
+                    }
+
+                    if (IsPrime(num, primes))
+                    {
+                        maxPrime = num;
+                    }
+                }
+
+                if (maxPrime > 0)
+                {
+                    Console.WriteLine("largest = " + maxPrime);
+                    return;
+                }
+            }
         }
 
         /// <summary>
