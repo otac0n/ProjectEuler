@@ -14,7 +14,7 @@
     /// 
     /// HINT: Some products can be obtained in more than one way so be sure to only include it once in your sum.
     /// </summary>
-    [Result(Name = "sum", Expected = "")]
+    [Result(Name = "sum", Expected = "45228")]
     public class Problem032 : Problem
     {
         public override string Solve(string resource)
