@@ -30,13 +30,15 @@ using System.Drawing;
     /// By solving all fifty puzzles find the sum of the 3-digit numbers found in the top left corner of each solution grid; for example, 483 is the 3-digit number found in the top left corner of the solution grid above.
     /// </summary>
     [ProblemResource("sudoku")]
-    [Result(Name = "result", Expected = "")]
+    [Result(Name = "sum", Expected = "")]
     public class Problem096 : Problem
     {
         public override string Solve(string resource)
         {
             var lines = (from l in resource.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
                          select l).ToArray();
+
+            var sum = 0;
 
             for (int i = 0; i < lines.Length; i += 10)
             {
@@ -56,9 +58,11 @@ using System.Drawing;
                 }
 
                 puzzle.Solve();
+
+                sum += 100 * puzzle[0, 0].Candidates[0] + 10 * puzzle[1, 0].Candidates[0] + 1 * puzzle[2, 0].Candidates[0];
             }
 
-            return "";
+            return sum.ToString();
         }
 
         private class SudokuPuzzle
@@ -102,9 +106,14 @@ using System.Drawing;
 
             public void Solve()
             {
-                var unsolved = from c in cells
-                               where c.Candidates.Count > 1
-                               select c;
+                //var unsolved = from c in cells
+                //               where c.Candidates.Count > 1
+                //               select c;
+                var unsolved = from i in Enumerable.Range(0, 3)
+                               let cell = this.cells[i]
+                               where cell.Candidates.Count > 1
+                               select cell;
+
 
                 while (unsolved.Any())
                 {
@@ -118,6 +127,13 @@ using System.Drawing;
                     }
 
                     removed = SolveHiddenSingles();
+
+                    if (removed > 0)
+                    {
+                        continue;
+                    }
+
+                    removed = RemoveLockedCandidates();
 
                     if (removed > 0)
                     {
@@ -244,14 +260,14 @@ using System.Drawing;
                         }
                     }
 
-                    for (int q = 0; q < 9; q++)
+                    for (int g = 0; g < 9; g++)
                     {
                         Point? singlePoint = null;
 
                         for (int i = 0; i < 9; i++)
                         {
-                            var x = (q % 3) * 3 + i % 3;
-                            var y = (q / 3) * 3 + i / 3;
+                            var x = (g % 3) * 3 + i % 3;
+                            var y = (g / 3) * 3 + i / 3;
 
                             var cell = this[x, y];
 
@@ -273,6 +289,185 @@ using System.Drawing;
                         {
                             this[singlePoint.Value].Set(c);
                             return 1;
+                        }
+                    }
+                }
+
+                return 0;
+            }
+
+            private int RemoveLockedCandidates()
+            {
+                int removed = 0;
+
+                for (int c = 1; c <= 9; c++)
+                {
+                    for (int y = 0; y < 9; y++)
+                    {
+                        var cols = from x in Enumerable.Range(0, 9)
+                                   let cell = this[x, y]
+                                   where cell.Candidates.Count > 1
+                                   where cell.Candidates.Contains(c)
+                                   let g = x / 3 + (y - (y % 3))
+                                   group cell by g into gp
+                                   select new
+                                   {
+                                       Group = gp.Key,
+                                       Cells = gp.ToList(),
+                                   };
+
+                        if (cols.Count() == 1)
+                        {
+                            var gp = cols.Single();
+                            var g = gp.Group;
+
+                            for (int i = 0; i < 9; i++)
+                            {
+                                var u = (g % 3) * 3 + i % 3;
+                                var v = (g / 3) * 3 + i / 3;
+
+                                if (v == y)
+                                {
+                                    continue;
+                                }
+
+                                var cell = this[u, v];
+                                if (cell.Candidates.Contains(c))
+                                {
+                                    cell.RemoveCandidate(c);
+                                    removed++;
+                                }                   
+                            }
+
+                            if (removed > 0)
+                            {
+                                return removed;
+                            }
+                        }
+                    }
+
+                    for (int x = 0; x < 9; x++)
+                    {
+                        var rows = from y in Enumerable.Range(0, 9)
+                                   let cell = this[x, y]
+                                   where cell.Candidates.Count > 1
+                                   where cell.Candidates.Contains(c)
+                                   let g = x / 3 + (y - (y % 3))
+                                   group cell by g into gp
+                                   select new
+                                   {
+                                       Group = gp.Key,
+                                       Cells = gp.ToList(),
+                                   };
+
+                        if (rows.Count() == 1)
+                        {
+                            var gp = rows.Single();
+                            var g = gp.Group;
+
+                            for (int i = 0; i < 9; i++)
+                            {
+                                var u = (g % 3) * 3 + i % 3;
+                                var v = (g / 3) * 3 + i / 3;
+
+                                if (u == x)
+                                {
+                                    continue;
+                                }
+
+                                var cell = this[u, v];
+                                if (cell.Candidates.Contains(c))
+                                {
+                                    cell.RemoveCandidate(c);
+                                    removed++;
+                                }
+                            }
+
+                            if (removed > 0)
+                            {
+                                return removed;
+                            }
+                        }
+                    }
+
+                    for (int g = 0; g < 9; g++)
+                    {
+                        var cols = from i in Enumerable.Range(0, 9)
+                                   let x = (g % 3) * 3 + i % 3
+                                   let y = (g / 3) * 3 + i / 3
+                                   let cell = this[x, y]
+                                   where cell.Candidates.Count > 1
+                                   where cell.Candidates.Contains(c)
+                                   group cell by x into gp
+                                   select new
+                                   {
+                                       Group = gp.Key,
+                                       Cells = gp.ToList(),
+                                   };
+
+                        if (cols.Count() == 1)
+                        {
+                            var gp = cols.Single();
+                            var x = gp.Group;
+
+                            for (int y = 0; y < 9; y++)
+                            {
+                                if (g == x / 3 + (y - (y % 3)))
+                                {
+                                    continue;
+                                }
+
+                                var cell = this[x, y];
+                                if (cell.Candidates.Contains(c))
+                                {
+                                    cell.RemoveCandidate(c);
+                                    removed++;
+                                }
+                            }
+
+                            if (removed > 0)
+                            {
+                                return removed;
+                            }
+                        }
+
+                        var rows = from i in Enumerable.Range(0, 9)
+                                   let x = (g % 3) * 3 + i % 3
+                                   let y = (g / 3) * 3 + i / 3
+                                   let cell = this[x, y]
+                                   where cell.Candidates.Count > 1
+                                   where cell.Candidates.Contains(c)
+                                   group cell by y into gp
+                                   select new
+                                   {
+                                       Group = gp.Key,
+                                       Cells = gp.ToList(),
+                                   };
+
+                        if (rows.Count() == 1)
+                        {
+                            var gp = rows.Single();
+                            var y = gp.Group;
+
+                            for (int x = 0; x < 9; x++)
+                            {
+                                if (g == x / 3 + (y - (y % 3)))
+                                {
+                                    continue;
+                                }
+
+                                var cell = this[x, y];
+                                if (cell.Candidates.Contains(c))
+                                {
+                                    cell.RemoveCandidate(c);
+                                    removed++;
+                                }
+                            }
+
+                            if (removed > 0)
+                            {
+                                return removed;
+                            }
                         }
                     }
                 }
