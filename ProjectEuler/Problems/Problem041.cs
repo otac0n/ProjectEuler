@@ -30,10 +30,15 @@
                         num += d;
                     }
 
-                    if (PrimeMath.IsPrime(num, primes))
+                    if (num > maxPrime && PrimeMath.IsPrime(num, primes))
                     {
-                        return maxPrime.ToString();
+                        maxPrime = num;
                     }
+                }
+
+                if (maxPrime > 0)
+                {
+                    return maxPrime.ToString();
                 }
             }
 

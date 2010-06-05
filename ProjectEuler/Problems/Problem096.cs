@@ -5,6 +5,7 @@
     using System.Linq;
 using System.Drawing;
     using System.Text;
+    using System.Combinatorics;
 
     /// <summary>
     /// Su Doku (Japanese meaning number place) is the name given to a popular puzzle concept. Its origin is unclear, but credit must be attributed to Leonhard Euler who invented a similar, and much more difficult, puzzle idea called Latin Squares. The objective of Su Doku puzzles, however, is to replace the blanks (or zeros) in a 9 by 9 grid in such that each row, column, and 3 by 3 box contains each of the digits 1 to 9. Below is an example of a typical starting puzzle grid and its solution grid.
@@ -30,7 +31,7 @@ using System.Drawing;
     /// By solving all fifty puzzles find the sum of the 3-digit numbers found in the top left corner of each solution grid; for example, 483 is the 3-digit number found in the top left corner of the solution grid above.
     /// </summary>
     [ProblemResource("sudoku")]
-    [Result(Name = "sum", Expected = "")]
+    [Result(Name = "sum", Expected = "24702")]
     public class Problem096 : Problem
     {
         public override string Solve(string resource)
@@ -106,9 +107,6 @@ using System.Drawing;
 
             public void Solve()
             {
-                //var unsolved = from c in cells
-                //               where c.Candidates.Count > 1
-                //               select c;
                 var unsolved = from i in Enumerable.Range(0, 3)
                                let cell = this.cells[i]
                                where cell.Candidates.Count > 1
@@ -134,6 +132,20 @@ using System.Drawing;
                     }
 
                     removed = RemoveLockedCandidates();
+
+                    if (removed > 0)
+                    {
+                        continue;
+                    }
+
+                    removed = SolveNakedSets();
+
+                    if (removed > 0)
+                    {
+                        continue;
+                    }
+
+                    removed = SolveXWing();
 
                     if (removed > 0)
                     {
@@ -467,6 +479,284 @@ using System.Drawing;
                             if (removed > 0)
                             {
                                 return removed;
+                            }
+                        }
+                    }
+                }
+
+                return 0;
+            }
+
+            private int SolveNakedSets()
+            {
+                var removed = 0;
+
+                for (int k = 2; k <= 8; k++)
+                {
+                    foreach (var cellSet in new Combinations<int>(new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, k, GenerateOption.WithoutRepetition))
+                    {
+                        var cellNumbers = cellSet.ToArray();
+
+                        for (int row = 0; row < 9; row++)
+                        {
+                            var cells = from c in cellNumbers
+                                        let cell = this[c, row]
+                                        select cell;
+
+                            if ((from c in cells
+                                 where c.Candidates.Count == 1
+                                 select c).Any())
+                            {
+                                continue;
+                            }
+
+                            var candidates = (from c in cells
+                                              select c.Candidates).SelectMany(q => q).Distinct().ToArray();
+
+                            if (candidates.Length == k)
+                            {
+                                for (int col = 0; col < 9; col++)
+                                {
+                                    if (cellNumbers.Contains(col))
+                                    {
+                                        continue;
+                                    }
+                                    
+                                    var cell = this[col, row];
+                                    
+                                    foreach (var candidate in candidates)
+                                    {
+                                        if (cell.Candidates.Contains(candidate))
+                                        {
+                                            cell.RemoveCandidate(candidate);
+                                            removed++;
+                                        }
+                                    }
+                                }
+
+                                if (removed > 0)
+                                {
+                                    return removed;
+                                }
+                            }
+                        }
+
+                        for (int col = 0; col < 9; col++)
+                        {
+                            var cells = from c in cellNumbers
+                                        let cell = this[col, c]
+                                        select cell;
+
+                            if ((from c in cells
+                                 where c.Candidates.Count == 1
+                                 select c).Any())
+                            {
+                                continue;
+                            }
+
+                            var candidates = (from c in cells
+                                              select c.Candidates).SelectMany(q => q).Distinct().ToArray();
+
+                            if (candidates.Length == k)
+                            {
+                                for (int row = 0; row < 9; row++)
+                                {
+                                    if (cellNumbers.Contains(row))
+                                    {
+                                        continue;
+                                    }
+
+                                    var cell = this[col, row];
+
+                                    foreach (var candidate in candidates)
+                                    {
+                                        if (cell.Candidates.Contains(candidate))
+                                        {
+                                            cell.RemoveCandidate(candidate);
+                                            removed++;
+                                        }
+                                    }
+                                }
+
+                                if (removed > 0)
+                                {
+                                    return removed;
+                                }
+                            }
+                        }
+
+                        for (int g = 0; g < 9; g++)
+                        {
+                            var cells = from c in cellNumbers
+                                        let u = (g % 3) * 3 + c % 3
+                                        let v = (g / 3) * 3 + c / 3
+                                        let cell = this[u, v]
+                                        select cell;
+
+                            if ((from c in cells
+                                 where c.Candidates.Count == 1
+                                 select c).Any())
+                            {
+                                continue;
+                            }
+
+                            var candidates = (from c in cells
+                                              select c.Candidates).SelectMany(q => q).Distinct().ToArray();
+
+                            if (candidates.Length == k)
+                            {
+                                for (int i = 0; i < 9; i++)
+                                {
+                                    if (cellNumbers.Contains(i))
+                                    {
+                                        continue;
+                                    }
+
+                                    var u = (g % 3) * 3 + i % 3;
+                                    var v = (g / 3) * 3 + i / 3;
+
+                                    var cell = this[u, v];
+
+                                    foreach (var candidate in candidates)
+                                    {
+                                        if (cell.Candidates.Contains(candidate))
+                                        {
+                                            cell.RemoveCandidate(candidate);
+                                            removed++;
+                                        }
+                                    }
+                                }
+
+                                if (removed > 0)
+                                {
+                                    return removed;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return 0;
+            }
+
+            private int SolveXWing()
+            {
+                var removed = 0;
+                for (var c = 1; c <= 9; c++)
+                {
+                    for (var row1 = 0; row1 < 8; row1++)
+                    {
+                        for (var row2 = row1 + 1; row2 < 9; row2++)
+                        {
+                            for (var col1 = 0; col1 < 8; col1++)
+                            {
+                                for (var col2 = col1 + 1; col2 < 9; col2++)
+                                {
+                                    if (row1 / 3 == row2 / 3 && col1 / 3 == col2 / 3)
+                                    {
+                                        continue;
+                                    }
+
+                                    if (!this[col1, row1].Candidates.Contains(c) ||
+                                        !this[col2, row1].Candidates.Contains(c) ||
+                                        !this[col1, row2].Candidates.Contains(c) ||
+                                        !this[col2, row2].Candidates.Contains(c))
+                                    {
+                                        continue;
+                                    }
+
+                                    var rowsEmpty = true;
+                                    var colsEmpty = true;
+
+                                    for (int row = 0; row < 9; row++)
+                                    {
+                                        if (row == row1 || row == row2)
+                                        {
+                                            continue;
+                                        }
+
+                                        if (this[col1, row].Candidates.Contains(c) ||
+                                            this[col2, row].Candidates.Contains(c))
+                                        {
+                                            colsEmpty = false;
+                                            break;
+                                        }
+                                    }
+
+                                    for (int col = 0; col < 9; col++)
+                                    {
+                                        if (col == col1 || col == col2)
+                                        {
+                                            continue;
+                                        }
+
+                                        if (this[col, row1].Candidates.Contains(c) ||
+                                            this[col, row2].Candidates.Contains(c))
+                                        {
+                                            rowsEmpty = false;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!(rowsEmpty ^ colsEmpty))
+                                    {
+                                        continue;
+                                    }
+
+                                    if (rowsEmpty)
+                                    {
+                                        for (int row = 0; row < 9; row++)
+                                        {
+                                            if (row == row1 || row == row2)
+                                            {
+                                                continue;
+                                            }
+
+                                            var cell1 = this[col1, row];
+                                            var cell2 = this[col2, row];
+                                            if (cell1.Candidates.Contains(c))
+                                            {
+                                                cell1.RemoveCandidate(c);
+                                                removed++;
+                                            }
+
+                                            if (cell2.Candidates.Contains(c))
+                                            {
+                                                cell2.RemoveCandidate(c);
+                                                removed++;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (int col = 0; col < 9; col++)
+                                        {
+                                            if (col == col1 || col == col2)
+                                            {
+                                                continue;
+                                            }
+
+                                            var cell1 = this[col, row1];
+                                            var cell2 = this[col, row2];
+                                            if (cell1.Candidates.Contains(c))
+                                            {
+                                                cell1.RemoveCandidate(c);
+                                                removed++;
+                                            }
+
+                                            if (cell2.Candidates.Contains(c))
+                                            {
+                                                cell2.RemoveCandidate(c);
+                                                removed++;
+                                            }
+                                        }
+                                    }
+
+                                    if (removed > 0)
+                                    {
+                                        return removed;
+                                    }
+                                }
                             }
                         }
                     }
