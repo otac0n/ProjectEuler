@@ -70,7 +70,7 @@ namespace ProjectEuler
                 new ProblemLoader<Problem050>(),
 
                 new ProblemLoader<Problem052>(),
-
+                new ProblemLoader<Problem053>(),
                 new ProblemLoader<Problem054>(),
 
                 new ProblemLoader<Problem057>(),
