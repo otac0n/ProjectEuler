@@ -248,6 +248,11 @@
                         if (primes.LargestValueChecked < maxFactor)
                         {
                             primes = GetPrimesBelow(maxFactor);
+
+                            if (primeIndex >= primes.Primes.Count)
+                            {
+                                break;
+                            }
                         }
                         else
                         {
