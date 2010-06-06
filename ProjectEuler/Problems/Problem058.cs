@@ -51,8 +51,6 @@
                     inc += 2;
                 }
             }
-
-            return "error";
         }
     }
 }
