@@ -1,6 +1,7 @@
 ﻿namespace ProjectEuler
 {
     using System;
+    using System.Numerics;
 
     public static class NumberTheory
     {
@@ -52,6 +53,16 @@
 
         public static bool IsPalindrome(long num, int @base)
         {
+            return num == ReverseNumber(num, @base);
+        }
+
+        public static bool IsPalindrome(BigInteger num, int @base)
+        {
+            return num == ReverseNumber(num, @base);
+        }
+
+        public static long ReverseNumber(long num, int @base)
+        {
             long reversed = 0;
             long k = num;
             while (k > 0)
@@ -59,8 +70,21 @@
                 reversed = @base * reversed + k % @base;
                 k = k / @base;
             }
-            
-            return num == reversed;
+
+            return reversed;
+        }
+
+        public static BigInteger ReverseNumber(BigInteger num, int @base)
+        {
+            BigInteger reversed = 0;
+            BigInteger k = num;
+            while (k > 0)
+            {
+                reversed = @base * reversed + k % @base;
+                k = k / @base;
+            }
+
+            return reversed;
         }
 
         public static long Square(long index)
