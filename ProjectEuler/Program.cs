@@ -16,6 +16,12 @@ namespace ProjectEuler
     {
         private static void Main(string[] args)
         {
+            Func<IProblemLoader, bool> target = problem =>
+            {
+                //return problem.ProblemName.CompareTo("Problem068") == 0;
+                return true;
+            };
+
             var loaders = new List<IProblemLoader>
             {
                 new ProblemLoader<Problem001>(),
@@ -82,6 +88,7 @@ namespace ProjectEuler
 
                 new ProblemLoader<Problem067>(),
 
+                new ProblemLoader<Problem068>(),
                 new ProblemLoader<Problem069>(),
 
                 new ProblemLoader<Problem076>(),
@@ -109,11 +116,17 @@ namespace ProjectEuler
             var previousElapsed = new TimeSpan();
             Console.SetWindowSize(80, 80);
 
-            int zebra = 0;
+            int targeted = 0;
             foreach (var loader in loaders)
             {
+                if (!target(loader))
+                {
+                    continue;
+                }
+
+                targeted++;
+
                 Console.ResetColor();
-                Console.BackgroundColor = zebra == 0 ? ConsoleColor.Black : ConsoleColor.Black;
 
                 var resource = loader.LoadResource();
                 var resultInfo = loader.LoadResultInfo();
@@ -128,19 +141,18 @@ namespace ProjectEuler
                 sw.Stop();
 
                 Console.ForegroundColor = string.IsNullOrEmpty(resultInfo.Expected) && !(string.IsNullOrEmpty(result) || result == "error") ? ConsoleColor.Yellow : (string.IsNullOrEmpty(result) || result == "error" || result != resultInfo.Expected ? ConsoleColor.Red : ConsoleColor.Green);
-                Console.Write((string.IsNullOrEmpty(result) || result == "error" ? "(error)" : result).PadRight(26 - Math.Max(resultInfo.Name.Length, 11)));
+                Console.Write((string.IsNullOrEmpty(result) || result == "error" ? "(error)" : result).PadRight(28 - Math.Max(resultInfo.Name.Length, 11)));
 
                 var delta = sw.Elapsed - previousElapsed;
                 Console.ForegroundColor = delta > TimeSpan.FromSeconds(0.75) ? ConsoleColor.Red : ConsoleColor.Cyan;
                 Console.WriteLine("+" + delta);
                 previousElapsed = sw.Elapsed;
-                zebra = 1 - zebra;
             }
 
             Console.ResetColor();
             Console.WriteLine();
             Console.Write("Solution Found in ");
-            Console.ForegroundColor = sw.Elapsed > TimeSpan.FromSeconds(loaders.Count) ? ConsoleColor.Red : ConsoleColor.Cyan;
+            Console.ForegroundColor = sw.Elapsed > TimeSpan.FromSeconds(targeted) ? ConsoleColor.Red : ConsoleColor.Cyan;
             Console.Write(sw.Elapsed);
             Console.ResetColor();
             Console.WriteLine(".");
