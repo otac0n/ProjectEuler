@@ -58,6 +58,7 @@
     <Compile Include="Problem.cs" />
     <Compile Include="ProblemLoader.cs" />
     <Compile Include="ProblemResourceAttribute.cs" />
+    <Compile Include="Problems\Problem095.cs" />
     <Compile Include="Problems\Problem082.cs" />
     <Compile Include="Problems\Problem058.cs" />
     <Compile Include="Program.cs" />
