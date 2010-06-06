@@ -69,6 +69,31 @@
             return result;
         }
 
+        public static long Totient(long num, PrimesList primes)
+        {
+            int numPrimes = primes.Primes.Count;
+
+            long totient = num;
+            long currentNum = num, temp, p, prevP = 0;
+            for (int primeIndex = 0; primeIndex < numPrimes; primeIndex++)
+            {
+                p = (int)primes.Primes[primeIndex];
+                if (p > currentNum) break;
+                temp = currentNum / p;
+                if (temp * p == currentNum)
+                {
+                    currentNum = temp;
+                    primeIndex--;
+                    if (prevP != p)
+                    {
+                        prevP = p; totient -= (totient / p);
+                    }
+                }
+            }
+
+            return totient;
+        }
+
         public static bool IsPossiblyPrime(long number, int rounds)
         {
             if (rounds <= 1)

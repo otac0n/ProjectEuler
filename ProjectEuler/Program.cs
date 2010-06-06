@@ -73,12 +73,16 @@ namespace ProjectEuler
                 new ProblemLoader<Problem053>(),
                 new ProblemLoader<Problem054>(),
                 new ProblemLoader<Problem055>(),
-
+                new ProblemLoader<Problem056>(),
                 new ProblemLoader<Problem057>(),
                 new ProblemLoader<Problem058>(),
                 new ProblemLoader<Problem059>(),
 
+                new ProblemLoader<Problem063>(),
+
                 new ProblemLoader<Problem067>(),
+
+                new ProblemLoader<Problem069>(),
 
                 new ProblemLoader<Problem076>(),
 
@@ -89,6 +93,8 @@ namespace ProjectEuler
 
                 new ProblemLoader<Problem089>(),
 
+                new ProblemLoader<Problem092>(),
+                
                 new ProblemLoader<Problem095>(),
                 new ProblemLoader<Problem096>(),
                 new ProblemLoader<Problem097>(),

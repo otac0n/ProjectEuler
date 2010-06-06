@@ -160,6 +160,11 @@
                 return this == other;
             }
 
+            public override int GetHashCode()
+            {
+                return this.Point.GetHashCode();
+            }
+
             public override bool Equals(object obj)
             {
                 if (obj == null || !(obj is PointDirection))

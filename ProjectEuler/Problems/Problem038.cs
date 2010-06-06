@@ -23,7 +23,6 @@
         public override string Solve(string resource)
         {
             var largest = 0;
-            var largestI = 0;
             for (int i = 1; i <= 9876; i++)
             {
                 var digits = new short[10];
