@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Numerics;
 
     public static class PrimeMath
     {
@@ -35,6 +36,24 @@
         public static long ModPow(long @base, long exponent, long modulus)
         {
             long result = 1;
+
+            while (exponent > 0)
+            {
+                if ((exponent & 1) != 0)
+                {
+                    result = (result * @base) % modulus;
+                }
+
+                exponent >>= 1;
+                @base = (@base * @base) % modulus;
+            }
+
+            return result;
+        }
+
+        public static BigInteger ModPow(BigInteger @base, BigInteger exponent, BigInteger modulus)
+        {
+            BigInteger result = 1;
 
             while (exponent > 0)
             {
