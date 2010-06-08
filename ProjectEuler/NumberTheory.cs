@@ -113,6 +113,26 @@
             return sqrt * sqrt == num;
         }
 
+        public static bool IsSquare(long num, out long sqrt)
+        {
+            sqrt = (long)Math.Sqrt(num);
+            return sqrt * sqrt == num;
+        }
+
+        public static bool IsSquare(BigInteger num, out BigInteger sqrt)
+        {
+            if (num <= long.MaxValue)
+            {
+                long lsqrt = 0;
+                var ret = IsSquare((long)num, out lsqrt);
+                sqrt = lsqrt;
+                return ret;
+            }
+
+            sqrt = 0;
+            return true;
+        }
+
         public static bool IsTriangular(long num)
         {
             var discriminant = 8 * num + 1;

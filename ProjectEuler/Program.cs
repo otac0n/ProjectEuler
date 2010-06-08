@@ -107,6 +107,7 @@ namespace ProjectEuler
                 new ProblemLoader<Problem097>(),
 
                 new ProblemLoader<Problem099>(),
+                new ProblemLoader<Problem100>(),
 
                 new ProblemLoader<Problem145>(),
 
@@ -118,7 +119,7 @@ namespace ProjectEuler
 
             var sw = new Stopwatch();
             var previousElapsed = new TimeSpan();
-            Console.SetWindowSize(80, 80);
+            //Console.SetWindowSize(80, 80);
 
             int targeted = 0;
             foreach (var loader in loaders)
