@@ -12,7 +12,7 @@
     /// 
     /// By finding the first arrangement to contain over 10^(12) = 1,000,000,000,000 discs in total, determine the number of blue discs that the box would contain
     /// </summary>
-    [Result(Name = "blue", Expected = "")]
+    [Result(Name = "blue", Expected = "756872327473")]
     public class Problem100 : Problem
     {
         public override string Solve(string resource)
@@ -27,26 +27,51 @@
             // b = (√(2t^2 - 2t + 1) + 1) / 2
 
             // So, the numerator of the fraction must be an EVEN INTEGER.
-            // This implies that the square-root expression must evaluate to the SMALLEST ODD INTEGER
+            // This implies that the square-root expression must evaluate to an ODD INTEGER
             //    that is greater than the expression √(2t_min^2 - 2t_min + 1).
 
-            BigInteger total = BigInteger.Pow(10, 12);
-            var desc = 2 * total * total - 2 * total + 1;
+            // We can further simplify this into:
+            // For an odd perfect square I, if 2*i^2 - 1 is an odd perfect square,
+            // b = (i + 1) / 2
+            // t = (√(2i^2 - 1) + 1) / 2
 
-            BigInteger sqrt = 0;
+            // This can be expressed as the equation:
+            // 2i^2 - 1 = p^2
+            // for some integers i and p.
+
+            // This can turn into a pell equation:
+            // x^2 - 2y^2 = -1
+            // where x and y are also odd.
+
+            var minTotal = BigInteger.Pow(10, 12);
+
+            var n = 2;
+            BigInteger x1 = 1;
+            BigInteger y1 = 1;
+
+            BigInteger xi = x1;
+            BigInteger yi = y1;
+
             while (true)
             {
-                desc += 4 * total++;
+                var xip1 = x1 * xi + n * y1 * yi;
+                var yip1 = x1 * yi + y1 * xi;
 
-                if (NumberTheory.IsSquare(desc, out sqrt))
+                if (!xip1.IsEven && !yip1.IsEven)
                 {
-                    break;
-                }
-            }
-            
-            var blue = (sqrt + 1) / 2;
+                    var total = ((2 * BigInteger.Pow(yip1, 2) - 1).Sqrt() + 1) / 2;
 
-            return blue.ToString() + "t" + total;
+                    if (total > minTotal)
+                    {
+                        var blue = (yip1 + 1) / 2;
+
+                        return blue.ToString();
+                    }
+                }
+
+                xi = xip1;
+                yi = yip1;
+            }
         }
     }
 }

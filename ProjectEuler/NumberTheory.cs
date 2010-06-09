@@ -121,6 +121,21 @@
 
         public static bool IsSquare(BigInteger num, out BigInteger sqrt)
         {
+            var str = num.ToString();
+            var d = str.Length;
+            var n = (d - (d % 2 == 0 ? 2 : 1)) / 2;
+            var estimate = BigInteger.Pow(10, n) * (d % 2 == 0 ? 5 : 2);
+
+            return IsSquare(num, out sqrt, estimate);
+        }
+
+        public static bool IsSquare(BigInteger num, out BigInteger sqrt, BigInteger estimate)
+        {
+            if (num < 0)
+            {
+                throw new ArgumentOutOfRangeException("num");
+            }
+
             if (num <= long.MaxValue)
             {
                 long lsqrt = 0;
@@ -129,8 +144,46 @@
                 return ret;
             }
 
-            sqrt = 0;
-            return true;
+            sqrt = num.Sqrt(estimate);
+
+            return num == BigInteger.Pow(sqrt, 2);
+        }
+
+        public static BigInteger Sqrt(this BigInteger num)
+        {
+            var str = num.ToString();
+            var d = str.Length;
+            var n = (d - (d % 2 == 0 ? 2 : 1)) / 2;
+            var estimate = BigInteger.Pow(10, n) * (d % 2 == 0 ? 5 : 2);
+
+            var sqrt = estimate;
+
+            BigInteger newSqrt = sqrt;
+            do
+            {
+                sqrt = newSqrt;
+
+                newSqrt = (sqrt + num / sqrt) / 2;
+            }
+            while (newSqrt != sqrt);
+
+            return sqrt;
+        }
+
+        public static BigInteger Sqrt(this BigInteger num, BigInteger estimate)
+        {
+            var sqrt = estimate;
+
+            BigInteger newSqrt = sqrt;
+            do
+            {
+                sqrt = newSqrt;
+
+                newSqrt = (sqrt + num / sqrt) / 2;
+            }
+            while (newSqrt != sqrt);
+
+            return sqrt;
         }
 
         public static bool IsTriangular(long num)
