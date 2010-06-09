@@ -40,8 +40,13 @@
             // for some integers i and p.
 
             // This can turn into a pell equation:
-            // x^2 - 2y^2 = -1
-            // where x and y are also odd.
+            // x^2 - ny^2 = -1
+            // with n = 2, where x and y are also odd.
+
+            // The primary solution to this equation is x = 1, y = 1
+            // Subsequent solutions are found by:
+            // x_i = x_1 * x_(i-1) + n * y_1 * y_(i-1)
+            // y_i = x_1 * y_(i-1) + y_1 * x_(i-1)
 
             var minTotal = BigInteger.Pow(10, 12);
 
