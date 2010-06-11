@@ -17,6 +17,16 @@
             return product;
         }
 
+        public static long GCD(long a, long b)
+        {
+            if (b == 0)
+            {
+                return a;
+            }
+
+            return GCD(b, a - b * (a / b));
+        }
+
         public static bool IsAnagram(long a, long b)
         {
             var aStr = a.ToString();

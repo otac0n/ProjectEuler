@@ -6,26 +6,26 @@
     using System.Diagnostics;
 
     /// <summary>
-    /// Consider the fraction, n/d, where n and d are positive integers. If n&ltd  and HCF(n,d)=1, it is called a reduced proper fraction.
+    /// Consider the fraction, n/d, where n and d are positive integers. If n&lt;d  and HCF(n,d)=1, it is called a reduced proper fraction.
     /// 
     /// If we list the set of reduced proper fractions for d ≤ 8 in ascending order of size, we get:
     /// 
     /// 1/8, 1/7, 1/6, 1/5, 1/4, 2/7, 1/3, 3/8, 2/5, 3/7, 1/2, 4/7, 3/5, 5/8, 2/3, 5/7, 3/4, 4/5, 5/6, 6/7, 7/8
     /// 
-    /// It can be seen that 2/5 is the fraction immediately to the left of 3/7.
+    /// It can be seen that there are 3 fractions between 1/3 and 1/2.
     /// 
-    /// By listing the set of reduced proper fractions for d ≤ 1,000,000 in ascending order of size, find the numerator of the fraction immediately to the left of 3/7.
+    /// How many fractions lie between 1/3 and 1/2 in the sorted set of reduced proper fractions for d ≤ 12,000?
     /// </summary>
-    [Result(Name = "numerator", Expected = "428570")]
-    public class Problem071 : Problem
+    [Result(Name = "count", Expected = "7295372")]
+    public class Problem073 : Problem
     {
         public override string Solve(string resource)
         {
-            var max = new Fraction(3, 7);
+            var min = new Fraction(1, 3);
+            var max = new Fraction(1, 2);
 
-            var min = new Fraction(0, 1);
-
-            for (long d = 2; d <= 1000000; d++)
+            var count = 0;
+            for (long d = 2; d <= 12000; d++)
             {
                 for (var n = min.Numerator * d / min.Denominator; n < d; n++)
                 {
@@ -41,11 +41,14 @@
                         continue;
                     }
 
-                    min = test;
+                    if (NumberTheory.GCD(n, d) == 1)
+                    {
+                        count++;
+                    }
                 }
             }
 
-            return min.Numerator.ToString();
+            return count.ToString();
         }
     }
 }
