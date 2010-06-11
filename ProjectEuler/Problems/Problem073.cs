@@ -21,32 +21,22 @@
     {
         public override string Solve(string resource)
         {
-            var min = new Fraction(1, 3);
-            var max = new Fraction(1, 2);
+            long maxDenom = 12000;
 
-            var count = 0;
-            for (long d = 2; d <= 12000; d++)
+            Func<long, long, long, long, long> f = null;
+            f = (a, b, c, d) =>
             {
-                for (var n = min.Numerator * d / min.Denominator; n < d; n++)
+                if (b + d > maxDenom)
                 {
-                    var test = new Fraction(n, d);
-
-                    if (test.CompareTo(max) >= 0)
-                    {
-                        break;
-                    }
-
-                    if (test.CompareTo(min) <= 0)
-                    {
-                        continue;
-                    }
-
-                    if (NumberTheory.GCD(n, d) == 1)
-                    {
-                        count++;
-                    }
+                    return 0;
                 }
-            }
+                else
+                {
+                    return f(a, b, a + c, b + d) + f(a + c, b + d, c, d) + 1;
+                }
+            };
+
+            long count = f(1, 3, 1, 2);
 
             return count.ToString();
         }

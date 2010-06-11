@@ -17,14 +17,39 @@
             return product;
         }
 
-        public static long GCD(long a, long b)
+        public static long GCD(this long a, long b)
         {
-            if (b == 0)
+            long temp;
+
+            while (a > 0)
             {
-                return a;
+                temp = b % a;
+                b = a;
+                a = temp;
             }
 
-            return GCD(b, a - b * (a / b));
+            return b;
+        }
+
+        public static bool IsRelativelyPrime(this long a, long b)
+        {
+            long temp;
+
+            if (a < b)
+            {
+                temp = a;
+                a = b;
+                b = temp;
+            }
+
+            while (b > 1)
+            {
+                temp = b;
+                b = a % b;
+                a = temp;
+            }
+
+            return b == 1;
         }
 
         public static bool IsAnagram(long a, long b)
