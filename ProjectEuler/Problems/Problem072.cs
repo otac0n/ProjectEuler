@@ -16,7 +16,7 @@
     /// 
     /// How many elements would be contained in the set of reduced proper fractions for d ≤ 1,000,000?
     /// </summary>
-    [Result(Name = "count", Expected = "")]
+    [Result(Name = "count", Expected = "303963552391")]
     public class Problem072 : Problem
     {
         public override string Solve(string resource)

@@ -21,7 +21,7 @@
     /// 
     /// Find the sum of the only ordered set of six cyclic 4-digit numbers for which each polygonal type: triangle, square, pentagonal, hexagonal, heptagonal, and octagonal, is represented by a different number in the set.
     /// </summary>
-    [Result(Name = "sum", Expected = "")]
+    [Result(Name = "sum", Expected = "28684")]
     public class Problem061 : Problem
     {
         public override string Solve(string resource)

@@ -11,7 +11,7 @@
     /// 
     /// Find the value of n ≤ 1,000,000 for which n/φ(n) is a maximum.
     /// </summary>
-    [Result(Name = "result", Expected = "510510")]
+    [Result(Name = "n", Expected = "510510")]
     public class Problem069 : Problem
     {
         public override string Solve(string resource)

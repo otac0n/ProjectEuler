@@ -123,6 +123,8 @@ namespace ProjectEuler
                 new ProblemLoader<Problem205>(),
                 new ProblemLoader<Problem206>(),
 
+                new ProblemLoader<Problem231>(),
+
                 new ProblemLoader<Problem293>(),
             };
 

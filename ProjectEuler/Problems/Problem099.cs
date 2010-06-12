@@ -12,7 +12,7 @@
     /// Using base_exp.txt, a 22K text file containing one thousand lines with a base/exponent pair on each line, determine which line number has the greatest numerical value.
     /// </summary>
     [ProblemResource("base_exp")]
-    [Result(Name = "line", Expected = "")]
+    [Result(Name = "line", Expected = "709")]
     public class Problem099 : Problem
     {
         public override string Solve(string resource)
