@@ -43,7 +43,7 @@
                 return n % 3 == 0 ? 2 * n / 3 : 1;
             };
 
-            var denom = new BigFraction(1, 1);
+            var denom = new BigFraction(1, eFrac(100));
 
             for (int i = 99; ; i--)
             {
