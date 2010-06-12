@@ -27,11 +27,7 @@
                         r *= a;
                     }
 
-                    var sum = 0;
-                    foreach (var c in r.ToString())
-                    {
-                        sum += (int)(c - '0');
-                    }
+                    var sum = r.DigitalSum();
 
                     max = Math.Max(max, sum);
                 }

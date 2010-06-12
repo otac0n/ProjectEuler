@@ -31,6 +31,20 @@
             return b;
         }
 
+        public static BigInteger GCD(this BigInteger a, BigInteger b)
+        {
+            BigInteger temp;
+
+            while (a > 0)
+            {
+                temp = b % a;
+                b = a;
+                a = temp;
+            }
+
+            return b;
+        }
+
         public static BigInteger nCr(long n, long r, PrimesList state)
         {
             var factorsNumerator = PrimeMath.FactorFactorial(n, state);
@@ -77,6 +91,33 @@
             }
 
             return b == 1;
+        }
+
+        public static int DigitalSum(this long a)
+        {
+            int sum = 0;
+            foreach (var c in a.ToString())
+            {
+                sum += (int)(c - '0');
+            }
+
+            return sum;
+        }
+
+        public static int DigitalSum(this int a)
+        {
+            return DigitalSum((long)a);
+        }
+
+        public static int DigitalSum(this BigInteger a)
+        {
+            int sum = 0;
+            foreach (var c in a.ToString())
+            {
+                sum += (int)(c - '0');
+            }
+
+            return sum;
         }
 
         public static bool IsAnagram(long a, long b)
