@@ -357,6 +357,36 @@
             return primeFactors;
         }
 
+        public static Dictionary<long, long> FactorFactorial(long number, PrimesList state)
+        {
+            GetPrimesBelow(number, state);
+
+            var factors = new Dictionary<long, long>();
+
+            for (int primeIndex = 0; primeIndex < state.Primes.Count; primeIndex++)
+            {
+                var prime = state.Primes[primeIndex];
+                if (prime > number)
+                {
+                    break;
+                }
+
+                var value = number;
+                long count = 0;
+
+                while (value > 1)
+                {
+                    var c = value / prime;
+                    count += c;
+                    value = c;
+                }
+
+                factors[prime] = count;
+            }
+
+            return factors;
+        }
+
         public static List<long> GetAllFactors(Dictionary<long, int> primeFactors)
         {
             return GetSubFactors(primeFactors).ToList();

@@ -31,6 +31,33 @@
             return b;
         }
 
+        public static BigInteger nCr(long n, long r, PrimesList state)
+        {
+            var factorsNumerator = PrimeMath.FactorFactorial(n, state);
+            var factorsDenom1 = PrimeMath.FactorFactorial(r, state);
+            var factorsDenom2 = PrimeMath.FactorFactorial(n - r, state);
+
+            BigInteger result = 1;
+            foreach (var factor in factorsNumerator.Keys)
+            {
+                var power = factorsNumerator[factor];
+
+                if (factorsDenom1.ContainsKey(factor))
+                {
+                    power -= factorsDenom1[factor];
+                }
+
+                if (factorsDenom2.ContainsKey(factor))
+                {
+                    power -= factorsDenom2[factor];
+                }
+
+                result *= BigInteger.Pow(factor, (int)power);
+            }
+
+            return result;
+        }
+
         public static bool IsRelativelyPrime(this long a, long b)
         {
             long temp;
