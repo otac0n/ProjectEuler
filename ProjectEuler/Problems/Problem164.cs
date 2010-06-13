@@ -8,7 +8,7 @@
     /// <summary>
     /// How many 20 digit numbers n (without any leading zero) exist such that no three consecutive digits of n have a sum greater than 9?
     /// </summary>
-    [Result(Name = "result", Expected = "378158756814587")]
+    [Result(Name = "count", Expected = "378158756814587")]
     public class Problem164 : Problem
     {
         public override string Solve(string resource)
