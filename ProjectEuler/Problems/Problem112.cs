@@ -40,7 +40,7 @@
 
                     if (sign == 0)
                     {
-                        sign = diff;
+                        sign = diff == 0 ? 0 : (diff > 0 ? 1 : -1);
                         continue;
                     }
                     else if (diff == 0)
@@ -56,15 +56,6 @@
                 return false;
             };
 
-            if (isBouncy(111)) throw new Exception();
-            if (isBouncy(122)) throw new Exception();
-            if (isBouncy(1123)) throw new Exception();
-            if (isBouncy(33211)) throw new Exception();
-            if (!isBouncy(121)) throw new Exception();
-            if (!isBouncy(152)) throw new Exception();
-            if (!isBouncy(989)) throw new Exception();
-            if (!isBouncy(76549)) throw new Exception();
-
             var bouncy = 0;
 
             for (int i = 1; ; i++)
@@ -74,7 +65,7 @@
                     bouncy++;
                 }
 
-                if (bouncy * 100 == i * 90)
+                if (bouncy * 100 == i * 99)
                 {
                     return i.ToString();
                 }
