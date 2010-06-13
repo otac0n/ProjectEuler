@@ -150,6 +150,7 @@
     <Compile Include="Problems\Problem065.cs" />
     <Compile Include="Problems\Problem112.cs" />
     <Compile Include="Problems\Problem187.cs" />
+    <Compile Include="Problems\Problem164.cs" />
     <Content Include="Resources\cipher1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
