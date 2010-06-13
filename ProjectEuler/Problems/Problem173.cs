@@ -25,7 +25,7 @@
             // y > 0 (meaning that it has a "hole")
 
             // Given that the laminae must be symmetrical horizontally and vertically,
-            // x ||| y (mod 2)
+            // x ≡ y (mod 2)
 
             var max = 1000000;
             var count = 0;
