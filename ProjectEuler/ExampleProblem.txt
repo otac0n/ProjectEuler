@@ -3,7 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Numerics;
 
+    /// <summary>
+    /// 
+    /// </summary>
     [ProblemResource("")]
     [Result(Name = "result", Expected = "")]
     public class Problem000 : Problem
