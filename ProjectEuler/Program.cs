@@ -18,7 +18,7 @@ namespace ProjectEuler
         {
             Func<IProblemLoader, bool> target = problem =>
             {
-                return problem.ProblemName.CompareTo("Problem191") == 0;
+                return problem.ProblemName.CompareTo("Problem122") == 0;
                 return problem.ProblemName.CompareTo("Problem104") != 0;
             };
 
@@ -124,6 +124,8 @@ namespace ProjectEuler
                 new ProblemLoader<Problem104>(),
 
                 new ProblemLoader<Problem112>(),
+
+                new ProblemLoader<Problem122>(),
 
                 new ProblemLoader<Problem145>(),
 
