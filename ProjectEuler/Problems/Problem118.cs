@@ -16,31 +16,28 @@
     {
         public override string Solve(string resource)
         {
+            // There are no 9 digit primes with unique digits, because 9 + 8 + 7 + 6 + 5 + 4 + 3 + 2 + 1 = 45, and 45 is divisible by three.
+            // Therefore, all numbers that have all of the digits 1-9 must be divisible by 3.
+
             var primes = PrimeMath.GetDefaultPrimes();
 
             long count = 0;
 
-            // Count all permutations of 1-9 digit pandigitals as: {abcdefghi} if abcdefghi is prime
-            //                                                 and {abcdefgh, i}, if a and bcdefghi are both prime.
+            // Count all permutations of 1-9 digit pandigitals as: {abcdefgh, i}, if a and bcdefghi are both prime.
             foreach (IList<int> digits in new Permutations<int>(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, GenerateOption.WithoutRepetition))
             {
+                if (!PrimeMath.IsPrime(digits[8], primes))
+                {
+                    continue;
+                }
+
                 var num = 0;
-                for (int i = 0; i < 9; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     num = (num * 10) + digits[i];
                 }
 
                 if (PrimeMath.IsPrime(num, primes))
-                {
-                    count++;
-                }
-
-                if (!PrimeMath.IsPrime(num % 10, primes))
-                {
-                    continue;
-                }
-
-                if (PrimeMath.IsPrime(num / 10, primes))
                 {
                     count++;
                 }
