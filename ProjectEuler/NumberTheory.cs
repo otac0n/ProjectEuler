@@ -273,6 +273,35 @@
             return num == BigInteger.Pow(sqrt, 2);
         }
 
+        public static bool IsCubic(long num)
+        {
+            var rt = (long)Math.Round(Math.Pow(num, 1.0d / 3), 0);
+
+            bool foundBelow = false;
+            bool foundAbove = false;
+            while(!(foundBelow && foundAbove))
+            {
+                var pow = rt * rt * rt;
+
+                if (pow < num)
+                {
+                    foundBelow = true;
+                    rt++;
+                }
+                else if (pow > num)
+                {
+                    foundAbove = true;
+                    rt--;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return !(foundBelow && foundAbove);
+        }
+
         public static BigInteger Sqrt(this BigInteger num)
         {
             var str = num.ToString();
