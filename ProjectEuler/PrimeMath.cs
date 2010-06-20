@@ -127,6 +127,11 @@
             };
         }
 
+        public static PrimesList GetDefaultPrimes()
+        {
+            return CreatePrimesList();
+        }
+
         public static PrimesList GetFirstNPrimes(long number)
         {
             var primes = CreatePrimesList();

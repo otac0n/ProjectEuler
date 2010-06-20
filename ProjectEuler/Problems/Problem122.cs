@@ -33,8 +33,7 @@
     ////
     ////For 1 ≤ k ≤ 200, find ∑ m(k).
     /// </summary>
-    [ProblemResource("")]
-    [Result(Name = "result", Expected = "")]
+    [Result(Name = "sum", Expected = "1582")]
     public class Problem122 : Problem
     {
         public override string Solve(string resource)
