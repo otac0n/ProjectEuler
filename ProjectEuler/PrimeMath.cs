@@ -71,6 +71,11 @@
 
         public static long Totient(long num, PrimesList primes)
         {
+            if (primes.LargestValueChecked < num)
+            {
+                GetPrimesBelow(num, primes);
+            }
+
             int numPrimes = primes.Primes.Count;
 
             long totient = num;

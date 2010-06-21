@@ -34,6 +34,71 @@
 
             return (this.Numerator * other.Denominator).CompareTo(other.Numerator * this.Denominator);
         }
+
+        public override int GetHashCode()
+        {
+            return unchecked((int)this.Numerator ^ (int)this.Denominator);
+        }
+
+        public bool Equals(Fraction other)
+        {
+            if (object.ReferenceEquals(other, null))
+            {
+                return false;
+            }
+
+            return this.CompareTo(other) == 0;
+        }
+
+        public override bool Equals(object other)
+        {
+            return this.Equals(other as Fraction);
+        }
+
+        public static bool operator ==(Fraction lhs, Fraction rhs)
+        {
+            if (object.ReferenceEquals(lhs, rhs))
+            {
+                return true;
+            }
+
+            return !object.ReferenceEquals(lhs, null) && lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(Fraction lhs, Fraction rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        public static bool operator >=(Fraction lhs, Fraction rhs)
+        {
+            if (object.ReferenceEquals(lhs, rhs))
+            {
+                return true;
+            }
+
+            return lhs.CompareTo(rhs) >= 0;
+        }
+
+        public static bool operator <=(Fraction lhs, Fraction rhs)
+        {
+            if (object.ReferenceEquals(lhs, rhs))
+            {
+                return true;
+            }
+
+            return lhs.CompareTo(rhs) <= 0;
+        }
+
+        public static bool operator >(Fraction lhs, Fraction rhs)
+        {
+            return !(lhs <= rhs);
+        }
+
+        public static bool operator <(Fraction lhs, Fraction rhs)
+        {
+            return !(lhs >= rhs);
+        }
     }
 
     [DebuggerDisplay("{Numerator} / {Denominator}")]

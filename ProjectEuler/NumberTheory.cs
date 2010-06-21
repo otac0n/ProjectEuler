@@ -1,6 +1,7 @@
 ﻿namespace ProjectEuler
 {
     using System;
+    using System.Linq;
     using System.Numerics;
 
     public static class NumberTheory
@@ -183,6 +184,22 @@
         public static bool IsPalindrome(BigInteger num, int @base)
         {
             return num == ReverseNumber(num, @base);
+        }
+
+        public static string PermutationKey(long num)
+        {
+           return string.Join(",", from c in num.ToString()
+                                   group c by c into d
+                                   orderby d.Key
+                                   select d.Key + "=" + d.Count());
+        }
+
+        public static string PermutationKey(string str)
+        {
+            return string.Join(",", from c in str
+                                    group c by c into d
+                                    orderby d.Key
+                                    select d.Key + "=" + d.Count());
         }
 
         public static long ReverseNumber(long num, int @base)
