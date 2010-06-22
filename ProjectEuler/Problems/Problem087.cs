@@ -15,7 +15,7 @@
     /// 
     /// How many numbers below fifty million can be expressed as the sum of a prime square, prime cube, and prime fourth power?
     /// </summary>
-    [Result(Name = "result", Expected = "1097343")]
+    [Result(Name = "count", Expected = "1097343")]
     public class Problem087 : Problem
     {
         public override string Solve(string resource)

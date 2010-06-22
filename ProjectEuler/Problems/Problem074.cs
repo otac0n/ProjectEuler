@@ -26,7 +26,7 @@
     /// 
     /// How many chains, with a starting number below one million, contain exactly sixty non-repeating terms?
     /// </summary>
-    [Result(Name = "result", Expected = "402")]
+    [Result(Name = "count", Expected = "402")]
     public class Problem074 : Problem
     {
         public override string Solve(string resource)
