@@ -34,7 +34,7 @@
                 var isLychrel = true;
                 for (int j = 0; j < 50; j++)
                 {
-                    num += NumberTheory.ReverseNumber(num, 10);
+                    num += NumberTheory.Reverse(num, 10);
 
                     if (NumberTheory.IsPalindrome(num, 10))
                     {

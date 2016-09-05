@@ -1,8 +1,6 @@
 ﻿namespace ProjectEuler
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Find the greatest product of five consecutive digits in the 1000-digit number.

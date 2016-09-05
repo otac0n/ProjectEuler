@@ -25,7 +25,7 @@
                     continue;
                 }
 
-                var rev = NumberTheory.ReverseNumber(i, 10);
+                var rev = NumberTheory.Reverse(i, 10);
                 var sum = i + rev;
 
                 var odd = true;

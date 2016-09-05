@@ -176,22 +176,22 @@
             return true;
         }
 
-        public static bool IsPalindrome(long num, int @base)
+        public static bool IsPalindrome(long num, int @base = 10)
         {
-            return num == ReverseNumber(num, @base);
+            return num == Reverse(num, @base);
         }
 
-        public static bool IsPalindrome(BigInteger num, int @base)
+        public static bool IsPalindrome(BigInteger num, int @base = 10)
         {
-            return num == ReverseNumber(num, @base);
+            return num == Reverse(num, @base);
         }
 
         public static string PermutationKey(long num)
         {
-           return string.Join(",", from c in num.ToString()
-                                   group c by c into d
-                                   orderby d.Key
-                                   select d.Key + "=" + d.Count());
+            return string.Join(",", from c in num.ToString()
+                                    group c by c into d
+                                    orderby d.Key
+                                    select d.Key + "=" + d.Count());
         }
 
         public static string PermutationKey(string str)
@@ -202,7 +202,7 @@
                                     select d.Key + "=" + d.Count());
         }
 
-        public static long ReverseNumber(long num, int @base)
+        public static long Reverse(this long num, int @base = 10)
         {
             long reversed = 0;
             long k = num;
@@ -215,8 +215,15 @@
             return reversed;
         }
 
-        public static BigInteger ReverseNumber(BigInteger num, int @base)
+        public static BigInteger Reverse(this BigInteger num, int @base = 10)
         {
+            if (@base == 10)
+            {
+                var chars = num.ToString().ToCharArray();
+                Array.Reverse(chars);
+                return BigInteger.Parse(new string(chars));
+            }
+
             BigInteger reversed = 0;
             BigInteger k = num;
             while (k > 0)
@@ -232,7 +239,7 @@
         {
             return index * index;
         }
-        
+
         public static long Triangle(long index)
         {
             return index % 2 == 0 ? (index / 2) * (index + 1) : ((index + 1) / 2) * index;
@@ -296,7 +303,7 @@
 
             bool foundBelow = false;
             bool foundAbove = false;
-            while(!(foundBelow && foundAbove))
+            while (!(foundBelow && foundAbove))
             {
                 var pow = rt * rt * rt;
 

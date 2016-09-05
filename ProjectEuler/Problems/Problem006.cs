@@ -1,9 +1,5 @@
 ﻿namespace ProjectEuler
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
     /// <summary>
     /// The sum of the squares of the first ten natural numbers is,
     /// 1^2 + 2^2 + ... + 10^2 = 385

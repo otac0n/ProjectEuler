@@ -1,9 +1,5 @@
 ﻿namespace ProjectEuler
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
     /// <summary>
     /// A Pythagorean triplet is a set of three natural numbers, a  &lt; b  &lt; c, for which,
     /// a^(2) + b^(2) = c^(2)
