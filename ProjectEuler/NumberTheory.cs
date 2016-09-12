@@ -326,18 +326,7 @@
             var n = (d - (d % 2 == 0 ? 2 : 1)) / 2;
             var estimate = BigInteger.Pow(10, n) * (d % 2 == 0 ? 5 : 2);
 
-            var sqrt = estimate;
-
-            BigInteger newSqrt = sqrt;
-            do
-            {
-                sqrt = newSqrt;
-
-                newSqrt = (sqrt + num / sqrt) / 2;
-            }
-            while (newSqrt != sqrt);
-
-            return sqrt;
+            return num.Sqrt(estimate);
         }
 
         public static BigInteger Sqrt(this BigInteger num, BigInteger estimate)
